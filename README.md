@@ -21,7 +21,18 @@ Install [Parcel](https://parceljs.org)
 npm install -g parcel-bundler
 ```
 
+# Usage
+
+```
+npm install
+npm run start
+```
+Navigate to http://localhost:8000
+
 # Creating the skeleton
+
+**NO NEED TO DO THIS**. Already done. This is just for reference.
+
 
 Let's use the [phaser3-typescript-parcel-template](https://github.com/ourcade/phaser3-typescript-parcel-template)
 
