@@ -14,8 +14,7 @@ const config: Phaser.Types.Core.GameConfig = {
 			gravity: { y: 200 }
 		}
 	},
-	//scene: [Preloader, Blockster]
-	scene: [Blockster]
+	scene: [Preloader, Blockster]
 }
 
 export default new Phaser.Game(config)

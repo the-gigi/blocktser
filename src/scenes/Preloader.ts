@@ -10,6 +10,7 @@ export default class Preloader extends Phaser.Scene {
 
     preload() {
         this.load.image(TextureKeys.Red, 'images/red.png')
+        this.load.image(TextureKeys.Blue, 'images/blue.png')
     }
 
     create() {
