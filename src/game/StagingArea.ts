@@ -20,13 +20,13 @@ export default class StagingArea extends Phaser.GameObjects.Container {
         this.shapes = [null, null, null]
         this.parts = []
 
-        const width = cols * unit
+        const width = 7 * unit // (space + 5 units + space)
         const height = rows * unit
         for (let i = 0; i < 3; ++i) {
             const rect = new Rectangle(
-                x + i * width / 3,
+                x + i * 6 * unit,
                 y,
-                width / 3,
+                7 * unit,
                 height)
 
             this.parts.push(rect)
@@ -53,13 +53,8 @@ export default class StagingArea extends Phaser.GameObjects.Container {
 
         this.shapes[index] = shape
         if (shape !== null) {
-            this.centerInRect(shape, this.parts[index])
+            shape.centerInRect(this.parts[index])
         }
-    }
-
-    centerInRect(shape: Shape, rect: Rectangle) {
-        shape.x = rect.x + (rect.width - shape.width) / 2
-        shape.y = rect.y + (rect.height - shape.height) / 2
     }
 
     preUpdate() {
