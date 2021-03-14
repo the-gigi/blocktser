@@ -4,10 +4,11 @@ import Shape from "~/game/Shape";
 import TextureKeys from "~/config/TextureKeys";
 import Pair from "~/game/Shape";
 import StagingArea from "~/game/StagingArea";
+import MainArea from "~/game/MainArea";
 
 
 export default class Blockster extends Phaser.Scene {
-    private grid!: Phaser.GameObjects.Grid
+    private mainArea!: MainArea
     private topBar!: Phaser.GameObjects.Grid
     private stagingArea!: StagingArea
     private shape!: Shape
@@ -24,7 +25,7 @@ export default class Blockster extends Phaser.Scene {
         const w = this.physics.world.bounds.width
         const h = this.physics.world.bounds.height
         this.config = GetConfig(w, h)
-        this.grid = this.createGrid(this.config.grid)
+        this.mainArea = this.createMainArea(this.config.mainArea)
         this.stagingArea = this.createStagingArea(this.config.stagingArea)
 
         // // Add a shape to play with
@@ -45,15 +46,9 @@ export default class Blockster extends Phaser.Scene {
         return stagingArea
     }
 
-    createGrid(gridConfig: ComponentConfig) {
-        const g = gridConfig
-        const u = gridConfig.unit
-        const w = u * g.cols
-        const h = u * g.rows
-        const x = g.x + w /2
-        const y = g.y + h / 2
-
-        return this.add.grid(x, y, w, h, u, u, g.fillColor)
+    createMainArea(mainAreaConfig: ComponentConfig) : MainArea {
+        const g = mainAreaConfig
+        return new MainArea(this, g.x, g.y, g.rows, g.cols, g.unit, g.fillColor)
     }
 
     createShape(x, y, unit: number, draggable: boolean = false) {
@@ -71,7 +66,7 @@ export default class Blockster extends Phaser.Scene {
         x += unit / 2
         y += unit / 2
         let cells = shapes[Math.floor(Math.random() * (shapes.length))]
-        return new Shape(this, x, y, unit, cells, TextureKeys.Blue, this.config.dragScale, draggable)
+        return new Shape(this, x, y, unit, cells, TextureKeys.Blue, this.config.dragScale, draggable, this.mainArea)
     }
 
     update(time: number, delta: number) {

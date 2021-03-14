@@ -1,14 +1,16 @@
 import Phaser from 'phaser'
 import Rectangle = Phaser.Geom.Rectangle;
+import ShapeDragHandler, {NoopHandler} from "~/game/Interfaces";
 
 export type Pair = [number, number]
 
 export default class Shape extends Phaser.GameObjects.Container {
-    private readonly cells: Pair[]
-    private readonly images: Phaser.GameObjects.Image[]
+    private readonly _cells: Pair[]
+    private readonly _images: Phaser.GameObjects.Image[]
     private readonly size: Pair
     private readonly dragScale: number
-    private unit: number
+    private _unit: number
+    private readonly dragHandler: ShapeDragHandler
 
     constructor(scene: Phaser.Scene,
                 x: number,
@@ -16,15 +18,17 @@ export default class Shape extends Phaser.GameObjects.Container {
                 unit: number,
                 cells: Pair[],
                 texture: string,
-                dragScale: number,
-                draggable: boolean = false) {
+                dragScale: number = 1,
+                draggable: boolean = false,
+                dragHandler: ShapeDragHandler = new NoopHandler()) {
         super(scene, x, y)
-        this.unit = unit
+        this._unit = unit
         this.size = this.calcSize(cells)
-        this.cells = cells
+        this._cells = cells
         this.dragScale = dragScale
+        this.dragHandler = dragHandler
         // create the shape squares as images
-        this.images = []
+        this._images = []
         cells.forEach((c) => {
             const xx = x + c[0] * unit
             const yy = y + c[1] * unit
@@ -34,12 +38,12 @@ export default class Shape extends Phaser.GameObjects.Container {
                 image.setInteractive()
                 scene.input.setDraggable(image);
             }
-            this.images.push(image)
+            this._images.push(image)
         })
 
         if (draggable) {
             const self = this
-            const shapeImages = this.images
+            const shapeImages = this._images
             scene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
                 if (shapeImages.indexOf(gameObject) == -1) {
                     return
@@ -52,6 +56,8 @@ export default class Shape extends Phaser.GameObjects.Container {
                     c.x += dx;
                     c.y += dy;
                 })
+                console.log(`calling dragHandler.onDragging(): ${self.dragHandler.onDragging}`)
+                self.dragHandler.onDragging(self)
             })
 
             scene.input.on('dragstart', function (pointer, gameObject) {
@@ -59,8 +65,9 @@ export default class Shape extends Phaser.GameObjects.Container {
                     return
                 }
 
-                self.unit *= self.dragScale
+                self._unit *= self.dragScale
                 self.updateShape()
+                self.dragHandler.onDragStart(self)
             })
 
             scene.input.on('dragend', function (pointer, gameObject) {
@@ -68,19 +75,28 @@ export default class Shape extends Phaser.GameObjects.Container {
                     return
                 }
 
-                self.unit /= self.dragScale
+                self._unit /= self.dragScale
                 self.updateShape()
+                self.dragHandler.onDragEnd(self)
             })
         }
+    }
+
+    get cells(): Pair[] {
+        return this._cells
+    }
+
+    get images(): Phaser.GameObjects.Image[] {
+        return this._images
     }
 
     updateShape() {
         for (let i = 0; i < this.cells.length; ++i) {
             const cell = this.cells[i]
-            let image = this.images[i]
-            image.x = this.x + cell[0] * this.unit
-            image.y = this.y + cell[1] * this.unit
-            image.setDisplaySize(this.unit, this.unit)
+            let image = this._images[i]
+            image.x = this.x + cell[0] * this._unit
+            image.y = this.y + cell[1] * this._unit
+            image.setDisplaySize(this._unit, this._unit)
         }
     }
 
@@ -91,7 +107,7 @@ export default class Shape extends Phaser.GameObjects.Container {
             width = Math.max(width, cells[i][0])
             height = Math.max(height, cells[i][1])
         }
-        return [width * this.unit, height * this.unit]
+        return [width * this._unit, height * this._unit]
     }
 
     centerInRect(rect: Rectangle) {
@@ -100,9 +116,9 @@ export default class Shape extends Phaser.GameObjects.Container {
 
         for (let i = 0; i < this.cells.length; ++i) {
             const cell = this.cells[i]
-            const image = this.images[i]
-            image.x = this.x + cell[0] * this.unit
-            image.y = this.y + cell[1] * this.unit
+            const image = this._images[i]
+            image.x = this.x + cell[0] * this._unit
+            image.y = this.y + cell[1] * this._unit
         }
     }
 

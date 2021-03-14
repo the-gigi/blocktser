@@ -9,7 +9,7 @@ export interface ComponentConfig {
 
 export interface Config {
     dragScale: number,
-    grid: ComponentConfig,
+    mainArea: ComponentConfig,
     stagingArea: ComponentConfig
 }
 
@@ -42,7 +42,7 @@ export default function GetConfig(screenWidth, screenHeight) : Config {
 
     return {
         dragScale: grid.unit / stagingArea.unit,
-        grid: grid,
+        mainArea: grid,
         stagingArea: stagingArea
     }
 }

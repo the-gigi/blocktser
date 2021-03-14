@@ -1,13 +1,15 @@
 import Phaser from 'phaser'
 import Shape from "~/game/Shape";
 import Rectangle = Phaser.Geom.Rectangle;
+import BaseGrid from "~/game/MainArea";
+import ShapeDragHandler from "~/game/Interfaces";
 
 
 export type Pair = [number, number]
 
-export default class StagingArea extends Phaser.GameObjects.Container {
+export default class StagingArea extends BaseGrid {
     private readonly shapes!: (Shape | null)[]
-    private parts!: Rectangle[]
+    private readonly parts!: Rectangle[]
     constructor(scene: Phaser.Scene,
                 x: number,
                 y: number,
@@ -15,35 +17,24 @@ export default class StagingArea extends Phaser.GameObjects.Container {
                 cols: number,
                 unit: number,
                 fillColor: number) {
-        super(scene, x, y)
+        super(scene, x, y, rows, cols, unit, fillColor)
 
         this.shapes = [null, null, null]
         this.parts = []
 
-        const width = 7 * unit // (space + 5 units + space)
+        const width = 7 * unit
         const height = rows * unit
         for (let i = 0; i < 3; ++i) {
             const rect = new Rectangle(
                 x + i * 6 * unit,
                 y,
-                7 * unit,
+                width,
                 height)
 
             this.parts.push(rect)
         }
-
-        this.createGrid(unit, rows, cols, fillColor)
     }
 
-    createGrid(unit: number, rows: number, cols: number, fillColor: number) {
-        const u = unit
-        const w = u * cols
-        const h = u * rows
-        const x = this.x + w /2
-        const y = this.y + h / 2
-
-        return this.scene.add.grid(x, y, w, h, u, u, fillColor)
-    }
     setShape(index: number, shape: (Shape | null)) {
         const currShape = this.shapes[index]
         if (currShape !== null) {
