@@ -1,4 +1,4 @@
-export type ComponentConfig = {
+export interface ComponentConfig {
     unit: number,
     x: number,
     y: number,
@@ -7,7 +7,7 @@ export type ComponentConfig = {
     fillColor: number,
 }
 
-export type Config = {
+export interface Config {
     dragScale: number,
     grid: ComponentConfig,
     stagingArea: ComponentConfig
