@@ -17,8 +17,9 @@ nvm use node
 ```
 
 Install [Parcel](https://parceljs.org)
+(for now install@1.12.3 due to [this issue](https://github.com/parcel-bundler/parcel/issues/5943))
 ```
-npm install -g parcel-bundler
+npm install -g parcel-bundler@1.12.3
 ```
 
 # Usage
