@@ -104,8 +104,6 @@ export default class Shape extends Phaser.GameObjects.Container {
             image.x = this.x + cell[0] * this.unit
             image.y = this.y + cell[1] * this.unit
         }
-
-        console.log('done')
     }
 
     preUpdate() {
