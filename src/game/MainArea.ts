@@ -30,22 +30,19 @@ export default class MainArea extends    BaseGrid
         return [row, col]
     }
 
-    isOnGrid(row: number, col: number): boolean {
-        return row >= 0 && col >= 0 && row < this.rows && col < this.cols
+    isOnGrid(shape: Shape): boolean {
+        const [row, col] = this.findGridLocation(shape)
+        return row >= 0 && col >= 0 && row <= this.rows - shape.height && col <= this.cols - shape.width
     }
 
     createPhantom(x: number, y: number, shape: Shape) {
         this.phantom = new Shape(this.scene, x, y, this.unit, shape.cells, TextureKeys.Phantom)
     }
 
-    updatePhantom(row: number, col: number, shape: Shape) {
+    updatePhantom(shape: Shape) {
+        const [row, col] = this.findGridLocation(shape)
         const x = this.x + (col + 0.5) * this.unit
         const y = this.y + (row + 0.5) * this.unit
-        const xx = Math.round(x)
-        const yy = Math.round(y)
-        const thisX = Math.round(this.x)
-        const thisY = Math.round(this.y)
-        console.log(`updatePhantom(), this: [${thisX},${thisY}] row,col: [${row}, ${col}] x,y: [${xx}, ${yy}]`)
         if (this.phantom == null) {
             this.createPhantom(x, y, shape)
             return
@@ -59,6 +56,10 @@ export default class MainArea extends    BaseGrid
     }
 
     onDragEnd(shape: Shape) {
+        this.clearPhantom()
+    }
+
+    clearPhantom() {
         if (this.phantom == null) {
             return
         }
@@ -68,11 +69,11 @@ export default class MainArea extends    BaseGrid
     }
 
     onDragging(shape: Shape) {
-        const [row, col] = this.findGridLocation(shape)
-        if (!this.isOnGrid(row, col)) {
+        if (!this.isOnGrid(shape)) {
+            this.clearPhantom()
             return
         }
 
-        this.updatePhantom(row, col, shape)
+        this.updatePhantom(shape)
     }
 }

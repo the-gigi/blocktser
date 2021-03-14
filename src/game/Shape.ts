@@ -10,6 +10,7 @@ export default class Shape extends Phaser.GameObjects.Container {
     private readonly size: Pair
     private readonly dragScale: number
     private _unit: number
+    private _imageDragScale: number
     private readonly dragHandler: ShapeDragHandler
 
     constructor(scene: Phaser.Scene,
@@ -18,11 +19,14 @@ export default class Shape extends Phaser.GameObjects.Container {
                 unit: number,
                 cells: Pair[],
                 texture: string,
+                depth: number = 0,
                 dragScale: number = 1,
+                imageDragScale: number = 1,
                 draggable: boolean = false,
                 dragHandler: ShapeDragHandler = new NoopHandler()) {
         super(scene, x, y)
         this._unit = unit
+        this._imageDragScale = imageDragScale
         this.size = this.calcSize(cells)
         this._cells = cells
         this.dragScale = dragScale
@@ -34,6 +38,7 @@ export default class Shape extends Phaser.GameObjects.Container {
             const yy = y + c[1] * unit
             const image = scene.add.image(xx, yy, texture)
             image.setDisplaySize(unit, unit)
+            image.setDepth(depth)
             if (draggable) {
                 image.setInteractive()
                 scene.input.setDraggable(image);
@@ -81,6 +86,14 @@ export default class Shape extends Phaser.GameObjects.Container {
         }
     }
 
+    get width() {
+        return Math.max(...this._cells.map(p => p[0])) + 1
+    }
+
+    get height() {
+        return Math.max(...this._cells.map(p => p[1])) + 1
+    }
+
     get cells(): Pair[] {
         return this._cells
     }
@@ -95,7 +108,9 @@ export default class Shape extends Phaser.GameObjects.Container {
             let image = this._images[i]
             image.x = this.x + cell[0] * this._unit
             image.y = this.y + cell[1] * this._unit
-            image.setDisplaySize(this._unit, this._unit)
+            const edge = this._unit * this._imageDragScale
+            console.log(`this._imageScale: ${this._imageDragScale}`)
+            image.setDisplaySize(edge, edge)
         }
     }
 

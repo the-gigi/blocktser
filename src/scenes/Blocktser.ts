@@ -39,7 +39,7 @@ export default class Blockster extends Phaser.Scene {
 
         // add some shapes to staging area
         for (let i = 0; i < 3; ++i) {
-            let shape = this.createShape(0, 0, c.unit, true)
+            let shape = this.createShape(0, 0, c.unit, 1, true)
             stagingArea.setShape(i, shape)
         }
 
@@ -51,7 +51,7 @@ export default class Blockster extends Phaser.Scene {
         return new MainArea(this, g.x, g.y, g.rows, g.cols, g.unit, g.fillColor)
     }
 
-    createShape(x, y, unit: number, draggable: boolean = false) {
+    createShape(x, y, unit: number, depth: number = 0, draggable: boolean = false) {
         const shapes: Pair[][] = [
             [[0,0], [1,0], [1,1], [1,2], [1,3]],
             [[0,0], [0,1], [0,2], [1,0], [1,1], [1,2], [2,0], [2,1], [2,2]],
@@ -67,7 +67,8 @@ export default class Blockster extends Phaser.Scene {
         y += unit / 2
         let cells = shapes[Math.floor(Math.random() * (shapes.length))]
         const texture = Math.random() < 0.5 ? TextureKeys.Blue : TextureKeys.Red
-        return new Shape(this, x, y, unit, cells, texture, this.config.dragScale, draggable, this.mainArea)
+        console.log(`createShape(), this.config.imageDragScale: ${this.config.imageDragScale}`)
+        return new Shape(this, x, y, unit, cells, texture, depth, this.config.dragScale, this.config.imageDragScale, draggable, this.mainArea)
     }
 
     update(time: number, delta: number) {
