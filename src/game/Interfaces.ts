@@ -5,9 +5,3 @@ export default interface ShapeDragHandler {
     onDragEnd: (shape: Shape) => void
     onDragging: (shape: Shape) => void
 }
-
-export class NoopHandler implements ShapeDragHandler {
-    onDragStart(shape: Shape) {}
-    onDragEnd(shape: Shape) {}
-    onDragging(shape: Shape) {}
-}

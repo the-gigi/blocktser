@@ -48,6 +48,26 @@ export default class StagingArea extends BaseGrid {
         }
     }
 
+    onDragStart(shape: Shape) {
+
+    }
+
+    onDragEnd(shape: Shape) {
+        for (let i = 0; i < this.shapes.length; ++i) {
+            if (this.shapes[i] != shape) {
+                continue
+            }
+
+            shape.destroy()
+            this.shapes[i] = null
+            return
+        }
+    }
+
+    onDragging(shape: Shape) {
+    }
+
+
     preUpdate() {
     }
 }

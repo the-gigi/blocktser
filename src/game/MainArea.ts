@@ -7,6 +7,7 @@ import ShapeDragHandler from "~/game/Interfaces";
 export default class MainArea extends    BaseGrid
                               implements ShapeDragHandler {
     private phantom!: (Shape | null)
+    private cells!: Map<Pair, Phaser.GameObjects.Image>
 
     constructor(scene: Phaser.Scene,
                 x: number,
@@ -17,10 +18,10 @@ export default class MainArea extends    BaseGrid
                 fillColor: number) {
         super(scene, x, y, rows, cols, unit, fillColor)
         this.phantom = null
+        this.cells = new Map<Pair, Phaser.GameObjects.Image>()
     }
 
     preUpdate() {
-
     }
 
     findGridLocation(shape: Shape): Pair {
@@ -53,9 +54,30 @@ export default class MainArea extends    BaseGrid
     }
 
     onDragStart(shape: Shape) {
+
     }
 
+    settleShape(shape: Shape) {
+        // bail out if shape intersects with any occupied cell
+        const [row, col] = this.findGridLocation(shape)
+        shape.cells.forEach((cell) => {
+            const key: Pair = [row + cell[1], col + cell[0]]
+            if (this.cells.has(key)) {
+                return
+            }
+        })
+
+        // Populate cells with the shape's image
+        shape.cells.forEach((cell) => {
+            const x = this.x + (col + cell[0] + 0.5) * this.unit
+            const y = this.y + (row + cell[1] + 0.5) * this.unit
+            const image = this.scene.add.image(x, y, shape.texture)
+            image.setDisplaySize(this.unit, this.unit)
+            this.cells.set([row, col], image)
+        })
+    }
     onDragEnd(shape: Shape) {
+        this.settleShape(shape)
         this.clearPhantom()
     }
 
@@ -64,7 +86,7 @@ export default class MainArea extends    BaseGrid
             return
         }
 
-        this.phantom.images.forEach((image) => image.destroy())
+        this.phantom.destroy()
         this.phantom = null
     }
 

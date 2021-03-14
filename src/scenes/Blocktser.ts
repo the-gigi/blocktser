@@ -25,30 +25,24 @@ export default class Blockster extends Phaser.Scene {
         const w = this.physics.world.bounds.width
         const h = this.physics.world.bounds.height
         this.config = GetConfig(w, h)
-        this.mainArea = this.createMainArea(this.config.mainArea)
-        this.stagingArea = this.createStagingArea(this.config.stagingArea)
-
-        // // Add a shape to play with
-        //const pos = this.grid.getTopLeft()
-        //this.shape = this.createShape(pos.x, pos.y, config.grid.unit, true)
+        this.createMainArea(this.config.mainArea)
+        this.createStagingArea(this.config.stagingArea)
     }
 
     createStagingArea(stagingAreaConfig: ComponentConfig) {
         const c = stagingAreaConfig
-        const stagingArea = new StagingArea(this, c.x, c.y, c.rows, c.cols, c.unit, c.fillColor)
+        this.stagingArea = new StagingArea(this, c.x, c.y, c.rows, c.cols, c.unit, c.fillColor)
 
         // add some shapes to staging area
         for (let i = 0; i < 3; ++i) {
             let shape = this.createShape(0, 0, c.unit, 1, true)
-            stagingArea.setShape(i, shape)
+            this.stagingArea.setShape(i, shape)
         }
-
-        return stagingArea
     }
 
     createMainArea(mainAreaConfig: ComponentConfig) : MainArea {
         const g = mainAreaConfig
-        return new MainArea(this, g.x, g.y, g.rows, g.cols, g.unit, g.fillColor)
+        this.mainArea = new MainArea(this, g.x, g.y, g.rows, g.cols, g.unit, g.fillColor)
     }
 
     createShape(x, y, unit: number, depth: number = 0, draggable: boolean = false) {
@@ -68,7 +62,10 @@ export default class Blockster extends Phaser.Scene {
         let cells = shapes[Math.floor(Math.random() * (shapes.length))]
         const texture = Math.random() < 0.5 ? TextureKeys.Blue : TextureKeys.Red
         console.log(`createShape(), this.config.imageDragScale: ${this.config.imageDragScale}`)
-        return new Shape(this, x, y, unit, cells, texture, depth, this.config.dragScale, this.config.imageDragScale, draggable, this.mainArea)
+        const dragHandlers = [this.mainArea, this.stagingArea]
+        const dragScale = this.config.dragScale
+        const imageDragScale = this.config.imageDragScale
+        return new Shape(this, x, y, unit, cells, texture, depth, dragScale, imageDragScale, draggable, dragHandlers)
     }
 
     update(time: number, delta: number) {

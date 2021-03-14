@@ -10,8 +10,9 @@ export default class Shape extends Phaser.GameObjects.Container {
     private readonly size: Pair
     private readonly dragScale: number
     private _unit: number
-    private _imageDragScale: number
-    private readonly dragHandler: ShapeDragHandler
+    private readonly _texture: string
+    private readonly _imageDragScale: number
+    private readonly dragHandlers: ShapeDragHandler[]
 
     constructor(scene: Phaser.Scene,
                 x: number,
@@ -23,14 +24,15 @@ export default class Shape extends Phaser.GameObjects.Container {
                 dragScale: number = 1,
                 imageDragScale: number = 1,
                 draggable: boolean = false,
-                dragHandler: ShapeDragHandler = new NoopHandler()) {
+                dragHandlers: ShapeDragHandler[]) {
         super(scene, x, y)
         this._unit = unit
+        this._texture = texture
         this._imageDragScale = imageDragScale
         this.size = this.calcSize(cells)
         this._cells = cells
         this.dragScale = dragScale
-        this.dragHandler = dragHandler
+        this.dragHandlers = dragHandlers
         // create the shape squares as images
         this._images = []
         cells.forEach((c) => {
@@ -61,7 +63,7 @@ export default class Shape extends Phaser.GameObjects.Container {
                     c.x += dx;
                     c.y += dy;
                 })
-                self.dragHandler.onDragging(self)
+                self.dragHandlers.forEach((h) => h.onDragging(self))
             })
 
             scene.input.on('dragstart', function (pointer, gameObject) {
@@ -71,7 +73,7 @@ export default class Shape extends Phaser.GameObjects.Container {
 
                 self._unit *= self.dragScale
                 self.updateShape()
-                self.dragHandler.onDragStart(self)
+                self.dragHandlers.forEach((h) => h.onDragStart(self))
             })
 
             scene.input.on('dragend', function (pointer, gameObject) {
@@ -81,16 +83,19 @@ export default class Shape extends Phaser.GameObjects.Container {
 
                 self._unit /= self.dragScale
                 self.updateShape()
-                self.dragHandler.onDragEnd(self)
+                self.dragHandlers.forEach((h) => h.onDragEnd(self))
             })
         }
     }
 
-    get width() {
+    get texture(): string {
+        return this._texture
+    }
+    get width(): number {
         return Math.max(...this._cells.map(p => p[0])) + 1
     }
 
-    get height() {
+    get height(): number {
         return Math.max(...this._cells.map(p => p[1])) + 1
     }
 
@@ -100,6 +105,10 @@ export default class Shape extends Phaser.GameObjects.Container {
 
     get images(): Phaser.GameObjects.Image[] {
         return this._images
+    }
+
+    destroy() {
+        this.images.forEach((image) => image.destroy())
     }
 
     updateShape() {
