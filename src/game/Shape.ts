@@ -71,7 +71,6 @@ export default class Shape extends Phaser.GameObjects.Container {
                 self.unit /= self.dragScale
                 self.updateShape()
             })
-
         }
     }
 
@@ -92,16 +91,10 @@ export default class Shape extends Phaser.GameObjects.Container {
             width = Math.max(width, cells[i][0])
             height = Math.max(height, cells[i][1])
         }
-        console.log(`width: ${width}, height: ${height}`)
-        let size : Pair = [width * this.unit, height * this.unit]
-        console.log(`size: ${size[0]}, ${size[1]}`)
-        return size
+        return [width * this.unit, height * this.unit]
     }
 
     centerInRect(rect: Rectangle) {
-        console.log(`rect.top: ${rect.top}, rect.bottom: ${rect.bottom}`)
-        console.log(`shape.y: ${this.y}`)
-        console.log(`shape.size: [${this.size[0]}, ${this.size[1]}]`)
         this.x = rect.x + (rect.width - this.size[0]) / 2
         this.y = rect.y + (rect.height - this.size[1]) / 2
 
@@ -110,7 +103,6 @@ export default class Shape extends Phaser.GameObjects.Container {
             const image = this.images[i]
             image.x = this.x + cell[0] * this.unit
             image.y = this.y + cell[1] * this.unit
-            console.log(`cell[1]: ${cell[1]}, image.y: ${image.y}`)
         }
 
         console.log('done')
