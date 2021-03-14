@@ -1,5 +1,19 @@
-export default function GetConfig(screenWidth, screenHeight) {
+export type ComponentConfig = {
+    unit: number,
+    x: number,
+    y: number,
+    rows: number,
+    cols: number,
+    fillColor: number,
+}
 
+export type Config = {
+    dragScale: number,
+    grid: ComponentConfig,
+    stagingArea: ComponentConfig
+}
+
+export default function GetConfig(screenWidth, screenHeight) : Config {
     const gridCols = 10
     const gridRows = 10
     const topBarRows = 3
@@ -27,6 +41,7 @@ export default function GetConfig(screenWidth, screenHeight) {
     }
 
     return {
+        dragScale: grid.unit / stagingArea.unit,
         grid: grid,
         stagingArea: stagingArea
     }

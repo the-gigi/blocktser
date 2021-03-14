@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import GetConfig from "~/config/Config";
+import GetConfig, {ComponentConfig, Config} from "~/config/Config";
 import Shape from "~/game/Shape";
 import TextureKeys from "~/config/TextureKeys";
 import Pair from "~/game/Shape";
@@ -11,6 +11,7 @@ export default class Blockster extends Phaser.Scene {
     private topBar!: Phaser.GameObjects.Grid
     private stagingArea!: StagingArea
     private shape!: Shape
+    private config!: Config
 
     constructor() {
         super('blocktser')
@@ -22,17 +23,17 @@ export default class Blockster extends Phaser.Scene {
     create() {
         const w = this.physics.world.bounds.width
         const h = this.physics.world.bounds.height
-        const config = GetConfig(w, h)
-        this.grid = this.createGrid(config.grid)
-        this.stagingArea = this.createStagingArea(config.stagingArea)
-        const pos = this.grid.getTopLeft()
+        this.config = GetConfig(w, h)
+        this.grid = this.createGrid(this.config.grid)
+        this.stagingArea = this.createStagingArea(this.config.stagingArea)
 
-        // Add a shape to play with
+        // // Add a shape to play with
+        //const pos = this.grid.getTopLeft()
         //this.shape = this.createShape(pos.x, pos.y, config.grid.unit, true)
     }
 
-    createStagingArea(config) {
-        const c = config
+    createStagingArea(stagingAreaConfig: ComponentConfig) {
+        const c = stagingAreaConfig
         const stagingArea = new StagingArea(this, c.x, c.y, c.rows, c.cols, c.unit, c.fillColor)
 
         // add some shapes to staging area
@@ -44,10 +45,7 @@ export default class Blockster extends Phaser.Scene {
         return stagingArea
     }
 
-
-
-
-    createGrid(gridConfig) {
+    createGrid(gridConfig: ComponentConfig) {
         const g = gridConfig
         const u = gridConfig.unit
         const w = u * g.cols
@@ -73,7 +71,7 @@ export default class Blockster extends Phaser.Scene {
         x += unit / 2
         y += unit / 2
         let cells = shapes[Math.floor(Math.random() * (shapes.length))]
-        return new Shape(this, x, y, unit, cells, TextureKeys.Blue, draggable)
+        return new Shape(this, x, y, unit, cells, TextureKeys.Blue, this.config.dragScale, draggable)
     }
 
     update(time: number, delta: number) {

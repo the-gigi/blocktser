@@ -6,19 +6,23 @@ export type Pair = [number, number]
 export default class Shape extends Phaser.GameObjects.Container {
     private readonly cells: Pair[]
     private readonly images: Phaser.GameObjects.Image[]
-    private readonly unit: number
     private readonly size: Pair
+    private readonly dragScale: number
+    private unit: number
+
     constructor(scene: Phaser.Scene,
                 x: number,
                 y: number,
                 unit: number,
                 cells: Pair[],
                 texture: string,
+                dragScale: number,
                 draggable: boolean = false) {
         super(scene, x, y)
         this.unit = unit
         this.size = this.calcSize(cells)
         this.cells = cells
+        this.dragScale = dragScale
         // create the shape squares as images
         this.images = []
         cells.forEach((c) => {
@@ -34,19 +38,50 @@ export default class Shape extends Phaser.GameObjects.Container {
         })
 
         if (draggable) {
+            const self = this
             const shapeImages = this.images
             scene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
                 if (shapeImages.indexOf(gameObject) == -1) {
                     return
                 }
-                console.log(`dragging ${shapeImages.length} images`)
                 const dx = dragX - gameObject.x
                 const dy = dragY - gameObject.y
+                self.x += dx
+                self.y += dy
                 shapeImages.forEach((c) => {
                     c.x += dx;
                     c.y += dy;
                 })
             })
+
+            scene.input.on('dragstart', function (pointer, gameObject) {
+                if (shapeImages.indexOf(gameObject) == -1) {
+                    return
+                }
+
+                self.unit *= self.dragScale
+                self.updateShape()
+            })
+
+            scene.input.on('dragend', function (pointer, gameObject) {
+                if (shapeImages.indexOf(gameObject) == -1) {
+                    return
+                }
+
+                self.unit /= self.dragScale
+                self.updateShape()
+            })
+
+        }
+    }
+
+    updateShape() {
+        for (let i = 0; i < this.cells.length; ++i) {
+            const cell = this.cells[i]
+            let image = this.images[i]
+            image.x = this.x + cell[0] * this.unit
+            image.y = this.y + cell[1] * this.unit
+            image.setDisplaySize(this.unit, this.unit)
         }
     }
 
