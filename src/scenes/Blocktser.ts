@@ -1,8 +1,8 @@
 import Phaser from 'phaser'
 import GetConfig, {ComponentConfig, Config} from "~/config/Config";
 import Shape from "~/game/Shape";
-import TextureKeys from "~/config/TextureKeys";
 import Pair from "~/game/Shape";
+import TextureKeys from "~/config/TextureKeys";
 import StagingArea from "~/game/StagingArea";
 import MainArea from "~/game/MainArea";
 
@@ -66,7 +66,8 @@ export default class Blockster extends Phaser.Scene {
         x += unit / 2
         y += unit / 2
         let cells = shapes[Math.floor(Math.random() * (shapes.length))]
-        return new Shape(this, x, y, unit, cells, TextureKeys.Blue, this.config.dragScale, draggable, this.mainArea)
+        const texture = Math.random() < 0.5 ? TextureKeys.Blue : TextureKeys.Red
+        return new Shape(this, x, y, unit, cells, texture, this.config.dragScale, draggable, this.mainArea)
     }
 
     update(time: number, delta: number) {

@@ -25,8 +25,8 @@ export default class MainArea extends    BaseGrid
 
     findGridLocation(shape: Shape): Pair {
         const r = shape.images[0].getBounds()
-        const col = (r.centerX - this.x) / this.unit
-        const row = (r.centerY - this.y) / this.unit
+        const col = Math.round((r.centerX - this.x) / this.unit) - 1
+        const row = Math.round((r.centerY - this.y) / this.unit) - 1
         return [row, col]
     }
 
@@ -34,32 +34,20 @@ export default class MainArea extends    BaseGrid
         return row >= 0 && col >= 0 && row < this.rows && col < this.cols
     }
 
-    onDragStart(shape: Shape) {
-    }
-
-    onDragEnd(shape: Shape) {
-    }
-
-    onDragging(shape: Shape) {
-        console.log('MainArea.onDragging()')
-        const [row, col] = this.findGridLocation(shape)
-        if (!this.isOnGrid(row, col)) {
-            return
-        }
-
-        this.updatePhantom(row, col, shape)
-    }
-
     createPhantom(x: number, y: number, shape: Shape) {
-        this.phantom = new Shape(this.scene, x, y, this.unit, shape.cells,
-                                 TextureKeys.Phantom)
+        this.phantom = new Shape(this.scene, x, y, this.unit, shape.cells, TextureKeys.Phantom)
     }
 
     updatePhantom(row: number, col: number, shape: Shape) {
-        const x = this.x + col * this.unit
-        const y = this.y + row * this.unit
+        const x = this.x + (col + 0.5) * this.unit
+        const y = this.y + (row + 0.5) * this.unit
+        const xx = Math.round(x)
+        const yy = Math.round(y)
+        const thisX = Math.round(this.x)
+        const thisY = Math.round(this.y)
+        console.log(`updatePhantom(), this: [${thisX},${thisY}] row,col: [${row}, ${col}] x,y: [${xx}, ${yy}]`)
         if (this.phantom == null) {
-            this.createPhantom(row, col, shape)
+            this.createPhantom(x, y, shape)
             return
         }
 
@@ -67,4 +55,24 @@ export default class MainArea extends    BaseGrid
         this.phantom.updateShape()
     }
 
+    onDragStart(shape: Shape) {
+    }
+
+    onDragEnd(shape: Shape) {
+        if (this.phantom == null) {
+            return
+        }
+
+        this.phantom.images.forEach((image) => image.destroy())
+        this.phantom = null
+    }
+
+    onDragging(shape: Shape) {
+        const [row, col] = this.findGridLocation(shape)
+        if (!this.isOnGrid(row, col)) {
+            return
+        }
+
+        this.updatePhantom(row, col, shape)
+    }
 }

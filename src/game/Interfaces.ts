@@ -9,7 +9,5 @@ export default interface ShapeDragHandler {
 export class NoopHandler implements ShapeDragHandler {
     onDragStart(shape: Shape) {}
     onDragEnd(shape: Shape) {}
-    onDragging(shape: Shape) {
-        console.log('ARGHHHHH!!!!!')
-    }
+    onDragging(shape: Shape) {}
 }

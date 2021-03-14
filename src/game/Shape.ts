@@ -56,7 +56,6 @@ export default class Shape extends Phaser.GameObjects.Container {
                     c.x += dx;
                     c.y += dy;
                 })
-                console.log(`calling dragHandler.onDragging(): ${self.dragHandler.onDragging}`)
                 self.dragHandler.onDragging(self)
             })
 

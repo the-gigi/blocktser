@@ -1,7 +1,7 @@
 enum TextureKeys {
     Red = 'red',
     Blue = 'blue',
-    Phantom = 'blue',
+    Phantom = 'phantom',
 
 }
 
