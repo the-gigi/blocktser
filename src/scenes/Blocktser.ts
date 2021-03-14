@@ -13,7 +13,7 @@ export default class Blockster extends Phaser.Scene {
     private shape!: Shape
 
     constructor() {
-        super('blockster')
+        super('blocktser')
     }
 
     preload() {
@@ -28,7 +28,7 @@ export default class Blockster extends Phaser.Scene {
         const pos = this.grid.getTopLeft()
 
         // Add a shape to play with
-        this.shape = this.createShape(pos.x, pos.y, config.grid.unit, true)
+        //this.shape = this.createShape(pos.x, pos.y, config.grid.unit, true)
     }
 
     createStagingArea(config) {
@@ -37,7 +37,7 @@ export default class Blockster extends Phaser.Scene {
 
         // add some shapes to staging area
         for (let i = 0; i < 3; ++i) {
-            let shape = this.createShape(0, 0, c.unit)
+            let shape = this.createShape(0, 0, c.unit, true)
             stagingArea.setShape(i, shape)
         }
 

@@ -1,6 +1,6 @@
 enum SceneKeys {
     Preloader = 'preloader',
-    Blockster = 'blockster',
+    Blocktser = 'blocktser',
     GameOver = 'game-over'
 }
 

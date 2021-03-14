@@ -14,6 +14,6 @@ export default class Preloader extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start(SceneKeys.Blockster)
+        this.scene.start(SceneKeys.Blocktser)
     }
 }

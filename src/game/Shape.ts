@@ -25,7 +25,6 @@ export default class Shape extends Phaser.GameObjects.Container {
             const xx = x + c[0] * unit
             const yy = y + c[1] * unit
             const image = scene.add.image(xx, yy, texture)
-            //image.setOrigin(0, 0)
             image.setDisplaySize(unit, unit)
             if (draggable) {
                 image.setInteractive()
@@ -37,6 +36,10 @@ export default class Shape extends Phaser.GameObjects.Container {
         if (draggable) {
             const shapeImages = this.images
             scene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+                if (shapeImages.indexOf(gameObject) == -1) {
+                    return
+                }
+                console.log(`dragging ${shapeImages.length} images`)
                 const dx = dragX - gameObject.x
                 const dy = dragY - gameObject.y
                 shapeImages.forEach((c) => {
