@@ -30,8 +30,8 @@ export default class MainArea extends    BaseGrid
 
     findGridLocation(shape: Shape): Pair {
         const r = shape.images[0].getBounds()
-        const col = Math.round((r.centerX - this.x) / this.unit) - 1
-        const row = Math.round((r.centerY - this.y) / this.unit) - 1
+        const col = Math.round((r.centerX - this.x + this.unit / 2) / this.unit) - 1
+        const row = Math.round((r.centerY - this.y + this.unit / 2) / this.unit) - 1
         return [row, col]
     }
 
