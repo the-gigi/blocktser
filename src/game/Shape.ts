@@ -5,13 +5,14 @@ import ShapeDragHandler from "~/game/Interfaces";
 export type Pair = [number, number]
 
 export default class Shape extends Phaser.GameObjects.Container {
+    private _unit: number
+    private _imageDragScale: number
+
     private readonly _cells: Pair[]
     private readonly _images: Phaser.GameObjects.Image[]
     private readonly size: Pair
     private readonly dragScale: number
-    private _unit: number
     private readonly _texture: string
-    private readonly _imageDragScale: number
     private readonly dragHandlers: ShapeDragHandler[]
 
     constructor(scene: Phaser.Scene,
@@ -72,7 +73,7 @@ export default class Shape extends Phaser.GameObjects.Container {
                 }
 
                 self._unit *= self.dragScale
-                self.updateShape()
+                self.updateShape(true)
                 self.dragHandlers.forEach((h) => h.onDragStart(self))
             })
 
@@ -82,7 +83,7 @@ export default class Shape extends Phaser.GameObjects.Container {
                 }
 
                 self._unit /= self.dragScale
-                self.updateShape()
+                self.updateShape(false)
                 self.dragHandlers.forEach((h) => h.onDragEnd(self))
             })
         }
@@ -111,13 +112,15 @@ export default class Shape extends Phaser.GameObjects.Container {
         this.images.forEach((image) => image.destroy())
     }
 
-    updateShape() {
+    updateShape(scaleImages: boolean) {
+        const scaleFactor = scaleImages ? this._imageDragScale : 1
+        const edge = this._unit * scaleFactor
+
         for (let i = 0; i < this.cells.length; ++i) {
             const cell = this.cells[i]
             let image = this._images[i]
             image.x = this.x + cell[0] * this._unit
             image.y = this.y + cell[1] * this._unit
-            const edge = this._unit * this._imageDragScale
             image.setDisplaySize(edge, edge)
         }
     }
@@ -144,6 +147,7 @@ export default class Shape extends Phaser.GameObjects.Container {
         }
     }
 
-    preUpdate() {
+    resetImageDragScale() {
+        this._imageDragScale = 1
     }
 }
