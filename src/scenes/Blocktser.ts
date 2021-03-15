@@ -9,7 +9,7 @@ import ShapeEventHandler from "~/game/Interfaces";
 
 
 export default class Blockster extends Phaser.Scene
-                               implements ShapeEventHandler {
+    implements ShapeEventHandler {
     private mainArea!: MainArea
     private topBar!: Phaser.GameObjects.Grid
     private stagingArea!: StagingArea
@@ -33,10 +33,13 @@ export default class Blockster extends Phaser.Scene
     createStagingArea(stagingAreaConfig: ComponentConfig) {
         const c = stagingAreaConfig
         this.stagingArea = new StagingArea(this, c.x, c.y, c.rows, c.cols, c.unit, c.fillColor)
+        this.populateStagingArea(c.unit)
+    }
 
+    populateStagingArea(unit: number) {
         // add some shapes to staging area
         for (let i = 0; i < 3; ++i) {
-            let shape = this.createShape(0, 0, c.unit, 1, true)
+            let shape = this.createShape(0, 0, unit, 1, true)
             this.stagingArea.addShape(shape)
         }
     }
@@ -49,13 +52,13 @@ export default class Blockster extends Phaser.Scene
 
     createShape(x, y, unit: number, depth: number = 0, draggable: boolean = false) {
         const shapes: Pair[][] = [
-            [[0,0], [1,0], [1,1], [1,2], [1,3]],
-            [[0,0], [0,1], [0,2], [1,0], [1,1], [1,2], [2,0], [2,1], [2,2]],
-            [[0,0]],
-            [[0,0], [0,1], [0,2]],
-            [[0,0], [0,1], [0,2], [1,2], [2,2]],
-            [[0,0], [0,1], [1,0], [1,1]],
-            [[0,0], [0,1], [0, 2], [0,3], [0,4]]
+            [[0, 0], [1, 0], [1, 1], [1, 2], [1, 3]],
+            [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]],
+            [[0, 0]],
+            [[0, 0], [0, 1], [0, 2]],
+            [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2]],
+            [[0, 0], [0, 1], [1, 0], [1, 1]],
+            [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4]]
         ]
 
         // Need to fix and add half a unit
@@ -74,12 +77,13 @@ export default class Blockster extends Phaser.Scene
         super.update(time, delta);
     }
 
-    onSettle(shape: Shape) {
 
-    }
     onDrop(shape: Shape, ok: boolean) {
         if (ok) {
             this.stagingArea.destroyShape(shape)
+            if (this.stagingArea.empty) {
+                this.populateStagingArea(this.config.stagingArea.unit)
+            }
         } else {
             this.stagingArea.repositionShape(shape)
         }

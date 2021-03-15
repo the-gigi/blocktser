@@ -78,7 +78,14 @@ export default class StagingArea extends BaseGrid {
     onDragging(shape: Shape) {
     }
 
+    get empty(): boolean {
+        for (const s of this.shapes) {
+            if (s != null) {
+                return false
+            }
+        }
 
-    preUpdate() {
+        return true
+        //return this.shapes.reduce((s1, s2) => (s1 === null) && (s2 === null))
     }
 }
