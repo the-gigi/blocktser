@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import Rectangle = Phaser.Geom.Rectangle;
-import ShapeDragHandler, {NoopHandler} from "~/game/Interfaces";
+import ShapeDragHandler from "~/game/Interfaces";
 
 export type Pair = [number, number]
 
@@ -118,7 +118,6 @@ export default class Shape extends Phaser.GameObjects.Container {
             image.x = this.x + cell[0] * this._unit
             image.y = this.y + cell[1] * this._unit
             const edge = this._unit * this._imageDragScale
-            console.log(`this._imageScale: ${this._imageDragScale}`)
             image.setDisplaySize(edge, edge)
         }
     }

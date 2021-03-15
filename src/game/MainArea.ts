@@ -7,7 +7,8 @@ import ShapeDragHandler from "~/game/Interfaces";
 export default class MainArea extends    BaseGrid
                               implements ShapeDragHandler {
     private phantom!: (Shape | null)
-    private cells!: Map<Pair, Phaser.GameObjects.Image>
+    //private cells!: Map<Pair, Phaser.GameObjects.Image>
+    private cells!: Map<string, Phaser.GameObjects.Image>
 
     constructor(scene: Phaser.Scene,
                 x: number,
@@ -18,7 +19,8 @@ export default class MainArea extends    BaseGrid
                 fillColor: number) {
         super(scene, x, y, rows, cols, unit, fillColor)
         this.phantom = null
-        this.cells = new Map<Pair, Phaser.GameObjects.Image>()
+        //this.cells = new Map<Pair, Phaser.GameObjects.Image>()
+        this.cells = new Map<string, Phaser.GameObjects.Image>()
     }
 
     preUpdate() {
@@ -60,12 +62,13 @@ export default class MainArea extends    BaseGrid
     settleShape(shape: Shape) {
         // bail out if shape intersects with any occupied cell
         const [row, col] = this.findGridLocation(shape)
-        shape.cells.forEach((cell) => {
-            const key: Pair = [row + cell[1], col + cell[0]]
-            if (this.cells.has(key)) {
+        const cells = [...this.cells.keys()]
+        for (const cell of shape.cells) {
+            const key = `${row + cell[1]},${col + cell[0]}`
+            if (cells.includes(key)) {
                 return
             }
-        })
+        }
 
         // Populate cells with the shape's image
         shape.cells.forEach((cell) => {
@@ -73,7 +76,8 @@ export default class MainArea extends    BaseGrid
             const y = this.y + (row + cell[1] + 0.5) * this.unit
             const image = this.scene.add.image(x, y, shape.texture)
             image.setDisplaySize(this.unit, this.unit)
-            this.cells.set([row, col], image)
+            const key = `${row + cell[1]},${col + cell[0]}`
+            this.cells.set(key, image)
         })
     }
     onDragEnd(shape: Shape) {
