@@ -5,13 +5,14 @@ import Pair from "~/game/Shape";
 import TextureKeys from "~/config/TextureKeys";
 import StagingArea from "~/game/StagingArea";
 import MainArea from "~/game/MainArea";
+import ShapeEventHandler from "~/game/Interfaces";
 
 
-export default class Blockster extends Phaser.Scene {
+export default class Blockster extends Phaser.Scene
+                               implements ShapeEventHandler {
     private mainArea!: MainArea
     private topBar!: Phaser.GameObjects.Grid
     private stagingArea!: StagingArea
-    private shape!: Shape
     private config!: Config
 
     constructor() {
@@ -36,13 +37,14 @@ export default class Blockster extends Phaser.Scene {
         // add some shapes to staging area
         for (let i = 0; i < 3; ++i) {
             let shape = this.createShape(0, 0, c.unit, 1, true)
-            this.stagingArea.setShape(i, shape)
+            this.stagingArea.addShape(shape)
         }
     }
 
-    createMainArea(mainAreaConfig: ComponentConfig) : MainArea {
+    createMainArea(mainAreaConfig: ComponentConfig) {
         const g = mainAreaConfig
-        this.mainArea = new MainArea(this, g.x, g.y, g.rows, g.cols, g.unit, g.fillColor)
+        const handler: ShapeEventHandler = this
+        this.mainArea = new MainArea(this, g.x, g.y, g.rows, g.cols, g.unit, g.fillColor, handler)
     }
 
     createShape(x, y, unit: number, depth: number = 0, draggable: boolean = false) {
@@ -70,5 +72,16 @@ export default class Blockster extends Phaser.Scene {
 
     update(time: number, delta: number) {
         super.update(time, delta);
+    }
+
+    onSettle(shape: Shape) {
+
+    }
+    onDrop(shape: Shape, ok: boolean) {
+        if (ok) {
+            this.stagingArea.destroyShape(shape)
+        } else {
+            this.stagingArea.repositionShape(shape)
+        }
     }
 }

@@ -35,16 +35,24 @@ export default class StagingArea extends BaseGrid {
         }
     }
 
-    setShape(index: number, shape: (Shape | null)) {
-        const currShape = this.shapes[index]
-        if (currShape !== null) {
-            currShape.destroy()
-            this.shapes[index] = null
+    addShape(shape: (Shape)) {
+        for (let i = 0; i < this.shapes.length; ++i) {
+            const currShape = this.shapes[i]
+            if (currShape == null) {
+                this.shapes[i] = shape
+                shape.centerInRect(this.parts[i])
+                return
+            }
         }
+    }
 
-        this.shapes[index] = shape
-        if (shape !== null) {
-            shape.centerInRect(this.parts[index])
+    repositionShape(shape: (Shape)) {
+        for (let i = 0; i < this.shapes.length; ++i) {
+            const currShape = this.shapes[i]
+            if (currShape == shape) {
+                shape.centerInRect(this.parts[i])
+                return
+            }
         }
     }
 
@@ -52,7 +60,7 @@ export default class StagingArea extends BaseGrid {
 
     }
 
-    onDragEnd(shape: Shape) {
+    destroyShape(shape: Shape) {
         for (let i = 0; i < this.shapes.length; ++i) {
             if (this.shapes[i] != shape) {
                 continue
@@ -62,6 +70,9 @@ export default class StagingArea extends BaseGrid {
             this.shapes[i] = null
             return
         }
+    }
+
+    onDragEnd(shape: Shape) {
     }
 
     onDragging(shape: Shape) {

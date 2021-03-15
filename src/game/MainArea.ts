@@ -3,12 +3,13 @@ import Shape, {Pair} from "~/game/Shape";
 import BaseGrid from "~/game/BaseGrid";
 import TextureKeys from "~/config/TextureKeys";
 import ShapeDragHandler from "~/game/Interfaces";
+import ShapeEventHandler from "~/game/Interfaces";
 
 export default class MainArea extends    BaseGrid
                               implements ShapeDragHandler {
     private phantom!: (Shape | null)
-    //private cells!: Map<Pair, Phaser.GameObjects.Image>
     private cells!: Map<string, Phaser.GameObjects.Image>
+    private shapeEventHandler!: ShapeEventHandler
 
     constructor(scene: Phaser.Scene,
                 x: number,
@@ -16,11 +17,12 @@ export default class MainArea extends    BaseGrid
                 rows: number,
                 cols: number,
                 unit: number,
-                fillColor: number) {
+                fillColor: number,
+                shapeEventHandler: ShapeEventHandler) {
         super(scene, x, y, rows, cols, unit, fillColor)
         this.phantom = null
-        //this.cells = new Map<Pair, Phaser.GameObjects.Image>()
         this.cells = new Map<string, Phaser.GameObjects.Image>()
+        this.shapeEventHandler = shapeEventHandler
     }
 
     preUpdate() {
@@ -60,12 +62,19 @@ export default class MainArea extends    BaseGrid
     }
 
     settleShape(shape: Shape) {
+        // bail out if not on grid
+        if (!this.isOnGrid(shape)) {
+            this.shapeEventHandler.onDrop(shape, false)
+            return
+        }
+
         // bail out if shape intersects with any occupied cell
         const [row, col] = this.findGridLocation(shape)
         const cells = [...this.cells.keys()]
         for (const cell of shape.cells) {
             const key = `${row + cell[1]},${col + cell[0]}`
             if (cells.includes(key)) {
+                this.shapeEventHandler.onDrop(shape, false)
                 return
             }
         }
@@ -79,6 +88,7 @@ export default class MainArea extends    BaseGrid
             const key = `${row + cell[1]},${col + cell[0]}`
             this.cells.set(key, image)
         })
+        this.shapeEventHandler.onDrop(shape, true)
     }
     onDragEnd(shape: Shape) {
         this.settleShape(shape)
