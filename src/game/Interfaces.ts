@@ -6,6 +6,6 @@ export default interface ShapeDragHandler {
     onDragging: (shape: Shape) => void
 }
 
-export default interface ShapeEventHandler {
+export default interface MainEventHandler {
     onDrop: (shape: Shape, ok: boolean) => void
 }

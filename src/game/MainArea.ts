@@ -3,13 +3,13 @@ import Shape, {Pair} from "~/game/Shape";
 import BaseGrid from "~/game/BaseGrid";
 import TextureKeys from "~/config/TextureKeys";
 import ShapeDragHandler from "~/game/Interfaces";
-import ShapeEventHandler from "~/game/Interfaces";
+import MainEventHandler from "~/game/Interfaces";
 
-export default class MainArea extends    BaseGrid
-                              implements ShapeDragHandler {
+export default class MainArea extends BaseGrid
+    implements ShapeDragHandler {
     private phantom!: (Shape | null)
     private cells!: Map<string, Phaser.GameObjects.Image>
-    private shapeEventHandler!: ShapeEventHandler
+    private shapeEventHandler!: MainEventHandler
 
     constructor(scene: Phaser.Scene,
                 x: number,
@@ -18,7 +18,7 @@ export default class MainArea extends    BaseGrid
                 cols: number,
                 unit: number,
                 fillColor: number,
-                shapeEventHandler: ShapeEventHandler) {
+                shapeEventHandler: MainEventHandler) {
         super(scene, x, y, rows, cols, unit, fillColor)
         this.phantom = null
         this.cells = new Map<string, Phaser.GameObjects.Image>()
@@ -90,12 +90,13 @@ export default class MainArea extends    BaseGrid
         })
         this.shapeEventHandler.onDrop(shape, true)
     }
+
     onDragEnd(shape: Shape) {
         this.settleShape(shape)
-        this.clearPhantom()
+        this.destroyPhantom()
     }
 
-    clearPhantom() {
+    destroyPhantom() {
         if (this.phantom == null) {
             return
         }
@@ -104,9 +105,43 @@ export default class MainArea extends    BaseGrid
         this.phantom = null
     }
 
+    get completeRows(): number {
+        let completeRowCount = 0
+
+        for (let i = 0; i < this.rows; ++i) {
+            for (let j = 0; j < this.cols; ++j) {
+                let complete = 1
+                if (!this.cells.has[`${i},${j}`]) {
+                    complete = 0
+                    break
+                }
+                completeRowCount += complete
+            }
+        }
+
+        return completeRowCount
+    }
+
+    get completeCols(): number {
+        let completeColCount = 0
+
+        for (let col = 0; col < this.cols; ++col) {
+            for (let row = 0; row < this.rows; ++row) {
+                let complete = 1
+                if (!this.cells.has[`${row},${col}`]) {
+                    complete = 0
+                    break
+                }
+                completeColCount += complete
+            }
+        }
+
+        return completeColCount
+    }
+    
     onDragging(shape: Shape) {
         if (!this.isOnGrid(shape)) {
-            this.clearPhantom()
+            this.destroyPhantom()
             return
         }
 

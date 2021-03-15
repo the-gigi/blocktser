@@ -5,11 +5,11 @@ import Pair from "~/game/Shape";
 import TextureKeys from "~/config/TextureKeys";
 import StagingArea from "~/game/StagingArea";
 import MainArea from "~/game/MainArea";
-import ShapeEventHandler from "~/game/Interfaces";
+import MainEventHandler from "~/game/Interfaces";
 
 
 export default class Blockster extends Phaser.Scene
-    implements ShapeEventHandler {
+    implements MainEventHandler {
     private mainArea!: MainArea
     private topBar!: Phaser.GameObjects.Grid
     private stagingArea!: StagingArea
@@ -46,7 +46,7 @@ export default class Blockster extends Phaser.Scene
 
     createMainArea(mainAreaConfig: ComponentConfig) {
         const g = mainAreaConfig
-        const handler: ShapeEventHandler = this
+        const handler: MainEventHandler = this
         this.mainArea = new MainArea(this, g.x, g.y, g.rows, g.cols, g.unit, g.fillColor, handler)
     }
 
