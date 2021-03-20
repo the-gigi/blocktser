@@ -14,6 +14,7 @@ export default class Blockster extends Phaser.Scene
     private topBar!: Phaser.GameObjects.Grid
     private stagingArea!: StagingArea
     private config!: Config
+    private score: number = 0
 
     constructor() {
         super('blocktser')
@@ -66,7 +67,6 @@ export default class Blockster extends Phaser.Scene
         y += unit / 2
         let cells = shapes[Math.floor(Math.random() * (shapes.length))]
         const texture = Math.random() < 0.5 ? TextureKeys.Blue : TextureKeys.Red
-        console.log(`createShape(), this.config.imageDragScale: ${this.config.imageDragScale}`)
         const dragHandlers = [this.mainArea, this.stagingArea]
         const dragScale = this.config.dragScale
         const imageDragScale = this.config.imageDragScale
@@ -84,6 +84,12 @@ export default class Blockster extends Phaser.Scene
             if (this.stagingArea.empty) {
                 this.populateStagingArea(this.config.stagingArea.unit)
             }
+
+            // update score
+            console.log(`completeRows: ${this.mainArea.completeRows}`)
+            console.log(`completeCols: ${this.mainArea.completeCols}`)
+            this.score += this.mainArea.completeRows.length + this.mainArea.completeCols.length
+            this.mainArea.clearComplete()
         } else {
             this.stagingArea.repositionShape(shape)
         }

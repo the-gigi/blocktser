@@ -72,8 +72,7 @@ export default class MainArea extends BaseGrid
         const [row, col] = this.findGridLocation(shape)
         const cells = [...this.cells.keys()]
         for (const cell of shape.cells) {
-            const key = `${row + cell[1]},${col + cell[0]}`
-            if (cells.includes(key)) {
+            if (!this.isCellEmpty(row + cell[1], col + cell[0])) {
                 this.shapeEventHandler.onDrop(shape, false)
                 return
             }
@@ -105,40 +104,74 @@ export default class MainArea extends BaseGrid
         this.phantom = null
     }
 
-    get completeRows(): number {
-        let completeRowCount = 0
+    isCellEmpty(row, col) {
+        const key = `${row},${col}`
+        return !this.cells.has(key) || this.cells.get(key) === null
+    }
 
-        for (let i = 0; i < this.rows; ++i) {
-            for (let j = 0; j < this.cols; ++j) {
-                let complete = 1
-                if (!this.cells.has[`${i},${j}`]) {
-                    complete = 0
+    get completeRows(): number[] {
+        let completeRows: number[] = []
+        let complete: boolean = false
+        for (let row = 0; row < this.rows; ++row) {
+            for (let col = 0; col < this.cols; ++col) {
+                complete = true
+                if (this.isCellEmpty(row, col)) {
+                    complete = false
                     break
                 }
-                completeRowCount += complete
+            }
+            if (complete) {
+                completeRows.push(row)
             }
         }
 
-        return completeRowCount
+        return completeRows
     }
 
-    get completeCols(): number {
-        let completeColCount = 0
-
+    get completeCols(): number[] {
+        let completeCols: number[] = []
+        let complete: boolean = false
         for (let col = 0; col < this.cols; ++col) {
             for (let row = 0; row < this.rows; ++row) {
-                let complete = 1
-                if (!this.cells.has[`${row},${col}`]) {
-                    complete = 0
+                complete = true
+                if (this.isCellEmpty(row, col)) {
+                    complete = false
                     break
                 }
-                completeColCount += complete
+            }
+            if (complete) {
+                completeCols.push(col)
             }
         }
 
-        return completeColCount
+        return completeCols
     }
-    
+
+    clearCell(row: number, col: number) {
+        const key = `${row},${col}`
+        console.log(`clearCell ${key}`)
+        if (!this.cells.has(key) || this.cells.get(key) === null) {
+            return
+        }
+
+        this.cells.get(key).destroy()
+        this.cells.set(key, null)
+    }
+
+    clearComplete() {
+        for (let row of this.completeRows) {
+            for (let col = 0; col < this.cols; ++col) {
+                this.clearCell(row, col)
+            }
+        }
+
+        for (let col of this.completeCols) {
+            for (let row = 0; row < this.rows; ++row) {
+                this.clearCell(row, col)
+            }
+        }
+    }
+
     onDragging(shape: Shape) {
         if (!this.isOnGrid(shape)) {
             this.destroyPhantom()
