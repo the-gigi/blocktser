@@ -1,7 +1,7 @@
 enum AudioKeys {
     Place = 'place',
-    GameOver = 'game-over'
-    Music = 'music'
+    GameOver = 'game-over',
+    Music = 'music',
 }
 
 export default AudioKeys

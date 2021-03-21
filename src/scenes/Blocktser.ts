@@ -34,8 +34,10 @@ export default class Blockster extends Phaser.Scene
         this.createMainArea(this.config.mainArea)
         this.createStagingArea(this.config.stagingArea)
         this.createTopBar(this.config.topBar)
-        this.music = this.sound.add(AudioKeys.Music)
-        this.music.play({volume: 0.8, loop: true})
+        if(this.config.playMusic) {
+            this.music = this.sound.add(AudioKeys.Music)
+            this.music.play({volume: 0.8, loop: true})
+        }
     }
 
     createStagingArea(stagingAreaConfig: ComponentConfig) {
@@ -89,7 +91,13 @@ export default class Blockster extends Phaser.Scene
     }
 
     get gameOver() : boolean {
-        return this.stagingArea.shapes.every(s => !this.mainArea.canShapeFit(s))
+        const gameOver = this.stagingArea.shapes.every(s => !this.mainArea.canShapeFit(s))
+        if (gameOver) {
+          return true
+        }
+
+        return false
+        //return this.stagingArea.shapes.every(s => !this.mainArea.canShapeFit(s))
     }
 
     handleGameOver() {
@@ -113,7 +121,19 @@ export default class Blockster extends Phaser.Scene
                     _header.HighScore = _header.Score;
                 }
          */
-        this.score += this.mainArea.completeRows.length + this.mainArea.completeCols.length
+        const rows = this.mainArea.completeRows.length
+        const cols = this.mainArea.completeCols.length
+
+        let total = rows + cols
+        // 10 points for every completed row and column
+        this.score += 10 * total
+        // 50 points bonus per row, beyond the first one
+        this.score += 50 * Math.max(0, rows - 1);
+        // 50 points bonus per column, beyond the first one
+        this.score += 50 * Math.max(0, cols - 1);
+        // 50 points bonus for each pair of row and column
+        this.score += 50 * Math.min(rows, cols);
+
         this.topBar.updateScore(this.score)
     }
 

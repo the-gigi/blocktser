@@ -65,7 +65,7 @@ export default class MainArea extends BaseGrid
         for (const cell of shape.cells) {
             const rr = row + cell[1]
             const cc = col + cell[0]
-            if (rr >= this.rows || cc >= this.cols) {
+            if (rr < 0 || cc < 0 || rr >= this.rows || cc >= this.cols) {
                 return false
             }
 
