@@ -1,10 +1,11 @@
 import Phaser from 'phaser'
-import GetConfig, {ComponentConfig, Config} from "~/config/Config";
+import GetConfig, {ComponentConfig, TopBarConfig, Config} from "~/config/Config";
 import Shape from "~/game/Shape";
 import Pair from "~/game/Shape";
 import TextureKeys from "~/config/TextureKeys";
 import StagingArea from "~/game/StagingArea";
 import MainArea from "~/game/MainArea";
+import TopBar from "~/game/TopBar"
 import MainEventHandler from "~/game/Interfaces";
 import SceneKeys from "~/config/SceneKeys";
 
@@ -12,7 +13,7 @@ import SceneKeys from "~/config/SceneKeys";
 export default class Blockster extends Phaser.Scene
     implements MainEventHandler {
     private mainArea!: MainArea
-    private topBar!: Phaser.GameObjects.Grid
+    private topBar!: TopBar
     private stagingArea!: StagingArea
     private config!: Config
     private score: number = 0
@@ -30,6 +31,7 @@ export default class Blockster extends Phaser.Scene
         this.config = GetConfig(w, h)
         this.createMainArea(this.config.mainArea)
         this.createStagingArea(this.config.stagingArea)
+        this.createTopBar(this.config.topBar)
     }
 
     createStagingArea(stagingAreaConfig: ComponentConfig) {
@@ -50,6 +52,10 @@ export default class Blockster extends Phaser.Scene
         const g = mainAreaConfig
         const handler: MainEventHandler = this
         this.mainArea = new MainArea(this, g.x, g.y, g.rows, g.cols, g.unit, g.fillColor, handler)
+    }
+
+    createTopBar(topBarConfig: TopBarConfig) {
+        this.topBar = new TopBar(this, topBarConfig)
     }
 
     createShape(x, y, unit: number, depth: number = 0, draggable: boolean = false) {
@@ -103,7 +109,9 @@ export default class Blockster extends Phaser.Scene
                 }
          */
         this.score += this.mainArea.completeRows.length + this.mainArea.completeCols.length
+        this.topBar.updateScore(this.score)
     }
+
     onDrop(shape: Shape, ok: boolean) {
         if (ok) {
             this.stagingArea.destroyShape(shape)

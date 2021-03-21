@@ -16,7 +16,7 @@ export default class StagingArea extends BaseGrid {
                 cols: number,
                 unit: number,
                 fillColor: number) {
-        super(scene, x, y, rows, cols, unit, fillColor, '')
+        super(scene, x, y, rows, cols, unit, fillColor)
         this._nullShape = new Shape(scene, 0, 0, 0, [])
         this._shapes = [this._nullShape, this._nullShape, this._nullShape]
         this._parts = []
