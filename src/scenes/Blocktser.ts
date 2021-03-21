@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import GetConfig, {ComponentConfig, TopBarConfig, Config} from "~/config/Config";
 import Shape from "~/game/Shape";
 import Pair from "~/game/Shape";
+import AudioKeys from "~/config/AudioKeys";
 import TextureKeys from "~/config/TextureKeys";
 import StagingArea from "~/game/StagingArea";
 import MainArea from "~/game/MainArea";
@@ -91,6 +92,7 @@ export default class Blockster extends Phaser.Scene
     handleGameOver() {
         console.log('Game Over!')
         this.scene.run(SceneKeys.GameOver)
+        this.sound.play(AudioKeys.GameOver)
     }
 
     updateScore() {
@@ -129,5 +131,7 @@ export default class Blockster extends Phaser.Scene
         } else {
             this.stagingArea.repositionShape(shape)
         }
+
+        this.sound.play(AudioKeys.Place)
     }
 }
