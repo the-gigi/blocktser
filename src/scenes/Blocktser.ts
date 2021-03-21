@@ -87,6 +87,23 @@ export default class Blockster extends Phaser.Scene
         this.scene.run(SceneKeys.GameOver)
     }
 
+    updateScore() {
+        /*
+        var total = rows.Count + columns.Count;
+                _header.Score += 10 * total;
+                // 50 points bonus for clearing more than one row
+                _header.Score += 5 * Math.Max(0, rows.Count - 1);
+                // 50 points bonus for clearing more than one column
+                _header.Score += 5 * Math.Max(0, columns.Count - 1);
+                // 50 points bonus for clearing both rows and columns
+                _header.Score += 5 * Math.Min(rows.Count, columns.Count);
+                if (_header.Score > _header.HighScore)
+                {
+                    _header.HighScore = _header.Score;
+                }
+         */
+        this.score += this.mainArea.completeRows.length + this.mainArea.completeCols.length
+    }
     onDrop(shape: Shape, ok: boolean) {
         if (ok) {
             this.stagingArea.destroyShape(shape)
@@ -94,10 +111,8 @@ export default class Blockster extends Phaser.Scene
                 this.populateStagingArea(this.config.stagingArea.unit)
             }
 
-            // update score
-            console.log(`completeRows: ${this.mainArea.completeRows}`)
-            console.log(`completeCols: ${this.mainArea.completeCols}`)
-            this.score += this.mainArea.completeRows.length + this.mainArea.completeCols.length
+            this.updateScore()
+
             this.mainArea.clearComplete()
             // check for game over
             if (this.gameOver) {
