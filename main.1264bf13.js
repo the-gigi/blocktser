@@ -33,4 +33,4 @@ var t,e=require("process"),i=arguments[3];!function(e,i){"object"==typeof export
 },{"phaser":"+E66","../config/SceneKeys":"R3m5","~/config/Config":"J6PK"}],"ZCfc":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var e=u(require("phaser")),r=u(require("./scenes/Blocktser")),t=u(require("~/scenes/Preloader")),a=u(require("~/scenes/GameOver"));function u(e){return e&&e.__esModule?e:{default:e}}var s={type:e.default.AUTO,width:600,height:800,physics:{default:"arcade",arcade:{gravity:{y:200}}},scene:[t.default,r.default,a.default]},d=new e.default.Game(s);exports.default=d;
 },{"phaser":"+E66","./scenes/Blocktser":"Jdnd","~/scenes/Preloader":"ddN1","~/scenes/GameOver":"j57G"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.1264bf13.js.map
+//# sourceMappingURL=/blocktser/main.1264bf13.js.map
