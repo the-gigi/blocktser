@@ -61,6 +61,21 @@ export default class MainArea extends BaseGrid
 
     }
 
+    canShapeSettle(shape: Shape, row: number, col: number) : boolean {
+        for (const cell of shape.cells) {
+            const rr = row + cell[1]
+            const cc = col + cell[0]
+            if (rr >= this.rows || cc >= this.cols) {
+                return false
+            }
+
+            if (!this.isCellEmpty(rr, cc)) {
+                return false
+            }
+        }
+        return true
+    }
+
     settleShape(shape: Shape) {
         // bail out if not on grid
         if (!this.isOnGrid(shape)) {
@@ -70,12 +85,9 @@ export default class MainArea extends BaseGrid
 
         // bail out if shape intersects with any occupied cell
         const [row, col] = this.findGridLocation(shape)
-        const cells = [...this.cells.keys()]
-        for (const cell of shape.cells) {
-            if (!this.isCellEmpty(row + cell[1], col + cell[0])) {
-                this.shapeEventHandler.onDrop(shape, false)
+        if (!this.canShapeSettle(shape, row, col)) {
+            this.shapeEventHandler.onDrop(shape, false)
                 return
-            }
         }
 
         // Populate cells with the shape's image
@@ -89,6 +101,26 @@ export default class MainArea extends BaseGrid
         })
         this.shapeEventHandler.onDrop(shape, true)
     }
+
+    canShapeFit(shape: Shape) : boolean {
+        if (shape === null) {
+            return false
+        }
+
+        for (let row = 0; row < this.rows; ++row) {
+            for (let col = 0; col < this.cols; ++col) {
+                const key = `${row},${col}`
+                if (this.cells.has(key)) {
+                    continue
+                }
+                if (this.canShapeSettle(shape, row, col)) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
 
     onDragEnd(shape: Shape) {
         this.settleShape(shape)
@@ -159,13 +191,16 @@ export default class MainArea extends BaseGrid
     }
 
     clearComplete() {
-        for (let row of this.completeRows) {
+        const completeRows = this.completeRows
+        const completeCols = this.completeCols
+
+        for (let row of completeRows) {
             for (let col = 0; col < this.cols; ++col) {
                 this.clearCell(row, col)
             }
         }
 
-        for (let col of this.completeCols) {
+        for (let col of completeCols) {
             for (let row = 0; row < this.rows; ++row) {
                 this.clearCell(row, col)
             }

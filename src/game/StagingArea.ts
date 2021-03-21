@@ -8,8 +8,9 @@ import ShapeDragHandler from "~/game/Interfaces";
 export type Pair = [number, number]
 
 export default class StagingArea extends BaseGrid {
-    private readonly shapes!: (Shape | null)[]
-    private readonly parts!: Rectangle[]
+    private readonly _shapes!: Shape[]
+    private readonly _parts!: Rectangle[]
+    private readonly _nullShape!: Shape
     constructor(scene: Phaser.Scene,
                 x: number,
                 y: number,
@@ -18,9 +19,9 @@ export default class StagingArea extends BaseGrid {
                 unit: number,
                 fillColor: number) {
         super(scene, x, y, rows, cols, unit, fillColor)
-
-        this.shapes = [null, null, null]
-        this.parts = []
+        this._nullShape = new Shape(scene, 0, 0, 0, [])
+        this._shapes = [this._nullShape, this._nullShape, this._nullShape]
+        this._parts = []
 
         const width = 7 * unit
         const height = rows * unit
@@ -31,26 +32,30 @@ export default class StagingArea extends BaseGrid {
                 width,
                 height)
 
-            this.parts.push(rect)
+            this._parts.push(rect)
         }
     }
 
+    get shapes(): (Shape)[] {
+        return this._shapes.filter((shape) => shape !== this._nullShape)
+    }
+
     addShape(shape: (Shape)) {
-        for (let i = 0; i < this.shapes.length; ++i) {
-            const currShape = this.shapes[i]
-            if (currShape == null) {
-                this.shapes[i] = shape
-                shape.centerInRect(this.parts[i])
+        for (let i = 0; i < this._shapes.length; ++i) {
+            const currShape = this._shapes[i]
+            if (currShape == this._nullShape) {
+                this._shapes[i] = shape
+                shape.centerInRect(this._parts[i])
                 return
             }
         }
     }
 
     repositionShape(shape: (Shape)) {
-        for (let i = 0; i < this.shapes.length; ++i) {
-            const currShape = this.shapes[i]
+        for (let i = 0; i < this._shapes.length; ++i) {
+            const currShape = this._shapes[i]
             if (currShape == shape) {
-                shape.centerInRect(this.parts[i])
+                shape.centerInRect(this._parts[i])
                 return
             }
         }
@@ -61,13 +66,13 @@ export default class StagingArea extends BaseGrid {
     }
 
     destroyShape(shape: Shape) {
-        for (let i = 0; i < this.shapes.length; ++i) {
-            if (this.shapes[i] != shape) {
+        for (let i = 0; i < this._shapes.length; ++i) {
+            if (this._shapes[i] != shape) {
                 continue
             }
 
             shape.destroy()
-            this.shapes[i] = null
+            this._shapes[i] = this._nullShape
             return
         }
     }
@@ -79,6 +84,6 @@ export default class StagingArea extends BaseGrid {
     }
 
     get empty(): boolean {
-        return this.shapes.reduce((acc, shape) => acc && shape === null, true)
+        return this._shapes.reduce((acc, shape) => acc && shape === this._nullShape, true)
     }
 }

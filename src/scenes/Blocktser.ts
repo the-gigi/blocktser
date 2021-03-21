@@ -77,6 +77,13 @@ export default class Blockster extends Phaser.Scene
         super.update(time, delta);
     }
 
+    get gameOver() : boolean {
+        return this.stagingArea.shapes.every(s => !this.mainArea.canShapeFit(s))
+    }
+
+    handleGameOver() {
+        console.log('Game Over!')
+    }
 
     onDrop(shape: Shape, ok: boolean) {
         if (ok) {
@@ -90,6 +97,10 @@ export default class Blockster extends Phaser.Scene
             console.log(`completeCols: ${this.mainArea.completeCols}`)
             this.score += this.mainArea.completeRows.length + this.mainArea.completeCols.length
             this.mainArea.clearComplete()
+            // check for game over
+            if (this.gameOver) {
+                this.handleGameOver()
+            }
         } else {
             this.stagingArea.repositionShape(shape)
         }
