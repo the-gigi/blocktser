@@ -12,6 +12,7 @@ export default class Preloader extends Phaser.Scene {
     preload() {
         this.load.audio(AudioKeys.Place, 'audio/clunk.wav')
         this.load.audio(AudioKeys.GameOver, 'audio/game-over.wav')
+        this.load.audio(AudioKeys.Music, 'audio/blocktser.wav')
 
         this.load.image(TextureKeys.Red, 'images/red.png')
         this.load.image(TextureKeys.Blue, 'images/blue.png')

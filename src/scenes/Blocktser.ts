@@ -18,6 +18,7 @@ export default class Blockster extends Phaser.Scene
     private stagingArea!: StagingArea
     private config!: Config
     private score: number = 0
+    private music: Phaser.Sound.BaseSound
 
     constructor() {
         super('blocktser')
@@ -33,6 +34,8 @@ export default class Blockster extends Phaser.Scene
         this.createMainArea(this.config.mainArea)
         this.createStagingArea(this.config.stagingArea)
         this.createTopBar(this.config.topBar)
+        this.music = this.sound.add(AudioKeys.Music)
+        this.music.play({volume: 0.8, loop: true})
     }
 
     createStagingArea(stagingAreaConfig: ComponentConfig) {
