@@ -6,6 +6,7 @@ import TextureKeys from "~/config/TextureKeys";
 import StagingArea from "~/game/StagingArea";
 import MainArea from "~/game/MainArea";
 import MainEventHandler from "~/game/Interfaces";
+import SceneKeys from "~/config/SceneKeys";
 
 
 export default class Blockster extends Phaser.Scene
@@ -83,6 +84,7 @@ export default class Blockster extends Phaser.Scene
 
     handleGameOver() {
         console.log('Game Over!')
+        this.scene.run(SceneKeys.GameOver)
     }
 
     onDrop(shape: Shape, ok: boolean) {

@@ -208,7 +208,8 @@ export default class MainArea extends BaseGrid
     }
 
     onDragging(shape: Shape) {
-        if (!this.isOnGrid(shape)) {
+        const [row, col] = this.findGridLocation(shape)
+        if (!this.canShapeSettle(shape, row, col)) {
             this.destroyPhantom()
             return
         }

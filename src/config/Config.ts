@@ -1,3 +1,5 @@
+
+
 export interface ComponentConfig {
     unit: number,
     x: number,
@@ -7,14 +9,23 @@ export interface ComponentConfig {
     fillColor: number,
 }
 
+export interface GameOverConfig {
+    fontSize: string
+    color: string
+    backgroundColor: string
+    shadow: object
+    padding: object
+}
+
 export interface Config {
     dragScale: number,
     imageDragScale: number,
     mainArea: ComponentConfig,
     stagingArea: ComponentConfig
+    gameOver: GameOverConfig
 }
 
-export default function GetConfig(screenWidth, screenHeight) : Config {
+export default function GetConfig(screenWidth, screenHeight): Config {
     const gridCols = 10
     const gridRows = 10
     const topBarRows = 3
@@ -41,10 +52,19 @@ export default function GetConfig(screenWidth, screenHeight) : Config {
         fillColor: 0x99aa55,
     }
 
+    const gameOver : GameOverConfig = {
+        fontSize: '20px',
+        color: '#ffffff',
+        backgroundColor: '#00ff00',
+        shadow: {fill: true, blur: 0, offsetY: 0},
+        padding: {left: 10, right: 10, top: 0, bottom: 0}
+    }
+
     return {
         dragScale: grid.unit / stagingArea.unit,
         imageDragScale: 0.85,
         mainArea: grid,
-        stagingArea: stagingArea
+        stagingArea: stagingArea,
+        gameOver: gameOver
     }
 }
