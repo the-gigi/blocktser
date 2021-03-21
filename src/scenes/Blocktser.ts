@@ -103,6 +103,7 @@ export default class Blockster extends Phaser.Scene
     handleGameOver() {
         console.log('Game Over!')
         this.scene.run(SceneKeys.GameOver)
+        this.stagingArea.interactive = false
         this.sound.play(AudioKeys.GameOver)
     }
 

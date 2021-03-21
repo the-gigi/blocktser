@@ -104,6 +104,14 @@ export default class Shape extends Phaser.GameObjects.Container {
         return this._cells
     }
 
+    set interactive(value: boolean) {
+        if (value) {
+            this.images.forEach(i => i.setInteractive())
+        } else {
+            this.images.forEach(i => i.disableInteractive())
+        }
+    }
+
     get images(): Phaser.GameObjects.Image[] {
         return this._images
     }

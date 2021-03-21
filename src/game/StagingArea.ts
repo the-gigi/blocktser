@@ -84,4 +84,8 @@ export default class StagingArea extends BaseGrid {
     get empty(): boolean {
         return this._shapes.reduce((acc, shape) => acc && shape === this._nullShape, true)
     }
+
+    set interactive(value: boolean) {
+       this._shapes.forEach(s => s.interactive = value)
+    }
 }
