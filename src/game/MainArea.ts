@@ -19,7 +19,7 @@ export default class MainArea extends BaseGrid
                 unit: number,
                 fillColor: number,
                 shapeEventHandler: MainEventHandler) {
-        super(scene, x, y, rows, cols, unit, fillColor)
+        super(scene, x, y, rows, cols, unit, fillColor, TextureKeys.Backdrop)
         this.phantom = null
         this.cells = new Map<string, Phaser.GameObjects.Image>()
         this.shapeEventHandler = shapeEventHandler

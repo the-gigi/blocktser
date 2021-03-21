@@ -2,6 +2,7 @@ enum TextureKeys {
     Red = 'red',
     Blue = 'blue',
     Phantom = 'phantom',
+    Backdrop = 'backdrop',
 
 }
 

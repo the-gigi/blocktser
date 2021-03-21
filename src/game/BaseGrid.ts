@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import TextureKeys from '~/config/TextureKeys'
 
 
 
@@ -8,6 +9,7 @@ export default class BaseGrid extends Phaser.GameObjects.Container {
     protected readonly unit!: number
     protected readonly rows!: number
     protected readonly cols!: number
+    protected readonly image!: Phaser.GameObjects.Image
 
     constructor(scene: Phaser.Scene,
                 x: number,
@@ -15,7 +17,8 @@ export default class BaseGrid extends Phaser.GameObjects.Container {
                 rows: number,
                 cols: number,
                 unit: number,
-                fillColor: number) {
+                fillColor: number,
+                texture: string = '') {
         super(scene, x, y)
         this.rows = rows
         this.cols = cols
@@ -26,6 +29,12 @@ export default class BaseGrid extends Phaser.GameObjects.Container {
         const h = u * rows
         const xx = this.x + w /2
         const yy = this.y + h / 2
-        this.scene.add.grid(xx, yy, w, h, u, u, fillColor)
+
+        if (texture !== '') {
+            this.image = this.scene.add.image(xx, yy, TextureKeys.Backdrop)
+            this.image.setDisplaySize(w, h)
+        } else {
+            this.scene.add.grid(xx, yy, w, h, u, u, fillColor)
+        }
     }
 }
