@@ -10,6 +10,7 @@ jobs:
       - name: Install and Build 🔧
         run: |
           npm install
+          npm install -g parcel-bundler@1.12.3
           npm run build
 
       - name: Deploy 🚀
