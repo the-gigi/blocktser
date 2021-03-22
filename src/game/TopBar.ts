@@ -3,28 +3,43 @@ import BaseGrid from "~/game/BaseGrid";
 import TopBarConfig from "~/game/TopBarConfig"
 
 export default class TopBar extends BaseGrid {
-    private text: Phaser.GameObjects.Text
+    private score: Phaser.GameObjects.Text
+    private highScore: Phaser.GameObjects.Text
 
     constructor(scene: Phaser.Scene,
-                topBarConfig: TopBarConfig) {
+                topBarConfig: TopBarConfig,
+                highScore: number) {
         const c = topBarConfig
         super(scene, c.x, c.y, c.rows, c.cols, c.unit, c.fillColor)
 
-        const w = c.cols * c.unit
-        const h = c.rows * c.unit
-        const tx = c.x + w / 2
-        const ty = c.y + h / 2
-
-        this.text = this.scene.add.text(tx, ty, 'Score: 0', {
+        const textStyle = {
             fontSize: c.fontSize,
             color: c.color,
             backgroundColor: c.backgroundColor,
             shadow: c.shadow,
             padding: c.padding
-        }).setOrigin(0.5)
+        }
+
+        const y = this.y + this.rows * this.unit / 2
+        this.score = this.scene.add.text(0, y, '', textStyle).setOrigin(0, 0.5)
+        this.highScore = this.scene.add.text(0, y, '', textStyle).setOrigin(0, 0.5)
+
+        this.updateScore(0)
+        this.updateHighScore(highScore)
+    }
+
+    get width() : number {
+        return this.cols * this.unit
     }
 
     updateScore(newScore: number) {
-        this.text.setText('Score: ' + newScore)
+        this.score.setText('Score: ' + newScore)
+        this.score.x = this.x + (this.width * 0.5 - this.score.width) / 2
+    }
+
+    updateHighScore(newHighScore: number) {
+        this.highScore.setText('High Score: ' + newHighScore)
+        const ww = this.width * 0.5
+        this.highScore.x = this.x + ww + (ww - this.highScore.width) / 2
     }
 }

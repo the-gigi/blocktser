@@ -52,11 +52,11 @@ export default function GetConfig(screenWidth, screenHeight): Config {
         rows: topBarRows
         cols: gridCols
         fillColor: 0xffc6ac
-        fontSize: '20px'
+        fontSize: '18px'
         color: '#000000'
         backgroundColor: '#ffc6ac'
         shadow: {fill: true, blur: 0, offsetY: 0}
-        padding: {left: 10, right: 10, top: 0, bottom: 0}
+        padding: {left: 5, right: 5, top: 0, bottom: 0}
     }
 
     const stagingArea : ComponentConfig = {

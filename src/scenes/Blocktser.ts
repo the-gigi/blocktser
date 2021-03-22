@@ -10,6 +10,7 @@ import TopBar from "~/game/TopBar"
 import MainEventHandler from "~/game/Interfaces";
 import SceneKeys from "~/config/SceneKeys";
 
+const highScoreKey = 'blocktser/high-score'
 
 export default class Blockster extends Phaser.Scene
     implements MainEventHandler {
@@ -18,7 +19,9 @@ export default class Blockster extends Phaser.Scene
     private stagingArea!: StagingArea
     private config!: Config
     private score: number = 0
+    private highScore: number = 0
     private music: Phaser.Sound.BaseSound
+
 
     constructor() {
         super('blocktser')
@@ -28,6 +31,7 @@ export default class Blockster extends Phaser.Scene
     }
 
     create() {
+        this.highScore = Number(localStorage.getItem(highScoreKey))
         const w = this.physics.world.bounds.width
         const h = this.physics.world.bounds.height
         this.config = GetConfig(w, h)
@@ -61,7 +65,7 @@ export default class Blockster extends Phaser.Scene
     }
 
     createTopBar(topBarConfig: TopBarConfig) {
-        this.topBar = new TopBar(this, topBarConfig)
+        this.topBar = new TopBar(this, topBarConfig, this.highScore)
     }
 
     createShape(x, y, unit: number, depth: number = 0, draggable: boolean = false) {
@@ -70,9 +74,13 @@ export default class Blockster extends Phaser.Scene
             [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]],
             [[0, 0]],
             [[0, 0], [0, 1], [0, 2]],
+            [[0, 0], [1, 0], [2, 0]],
             [[0, 0], [0, 1], [0, 2], [1, 2], [2, 2]],
             [[0, 0], [0, 1], [1, 0], [1, 1]],
-            [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4]]
+            [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4]],
+            [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]],
+            [[0, 0], [1, 0], [1, 1], [2, 1]],
+            [[0, 0], [0, 1], [1, 1], [1, 2]],
         ]
 
         // Need to fix and add half a unit
@@ -102,7 +110,7 @@ export default class Blockster extends Phaser.Scene
     }
 
     handleGameOver() {
-        console.log('Game Over!')
+        localStorage.setItem(highScoreKey, String(this.highScore))
         this.scene.run(SceneKeys.GameOver)
         this.stagingArea.interactive = false
         this.sound.play(AudioKeys.GameOver)
@@ -123,6 +131,10 @@ export default class Blockster extends Phaser.Scene
         this.score += 50 * Math.min(rows, cols);
 
         this.topBar.updateScore(this.score)
+        if (this.score > this.highScore) {
+            this.highScore = this.score
+            this.topBar.updateHighScore(this.highScore)
+        }
     }
 
     onDrop(shape: Shape, ok: boolean) {
