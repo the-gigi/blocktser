@@ -2,6 +2,7 @@ import Phaser from 'phaser'
 import Shape from "~/game/Shape";
 import Rectangle = Phaser.Geom.Rectangle;
 import BaseGrid from "~/game/BaseGrid";
+import TextureKeys from "~/config/TextureKeys";
 
 export type Pair = [number, number]
 
@@ -16,7 +17,7 @@ export default class StagingArea extends BaseGrid {
                 cols: number,
                 unit: number,
                 fillColor: number) {
-        super(scene, x, y, rows, cols, unit, fillColor)
+        super(scene, x, y, rows, cols, unit, fillColor, TextureKeys.Staging)
         this._nullShape = new Shape(scene, 0, 0, 0, [])
         this._shapes = [this._nullShape, this._nullShape, this._nullShape]
         this._parts = []

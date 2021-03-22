@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import GetConfig, {ComponentConfig, TopBarConfig, Config} from "~/config/Config";
+import GetConfig, {ComponentConfig, Config, TopBarConfig} from "~/config/Config";
 import Shape from "~/game/Shape";
 import Pair from "~/game/Shape";
 import AudioKeys from "~/config/AudioKeys";
@@ -79,7 +79,22 @@ export default class Blockster extends Phaser.Scene
         x += unit / 2
         y += unit / 2
         let cells = shapes[Math.floor(Math.random() * (shapes.length))]
-        const texture = Math.random() < 0.5 ? TextureKeys.Blue : TextureKeys.Red
+
+        const textures = [TextureKeys.Red, TextureKeys.Blue, TextureKeys.Green, TextureKeys.Orange]
+        const index = Math.round(Math.random() * 4)
+        let texture = textures[index]
+        const value = Math.random()
+        if (value < 0.25) {
+            texture = TextureKeys.Blue
+        } else if (value < 0.5) {
+            texture = TextureKeys.Red
+        } else if (value < 0.75) {
+            texture = TextureKeys.Green
+        } else {
+            texture = TextureKeys.Orange
+        }
+
+        //const texture = Math.random() < 0.5 ? TextureKeys.Blue : TextureKeys.Red
         const dragHandlers = [this.mainArea, this.stagingArea]
         const dragScale = this.config.dragScale
         const imageDragScale = this.config.imageDragScale

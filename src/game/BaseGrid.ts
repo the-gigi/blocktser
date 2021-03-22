@@ -31,7 +31,7 @@ export default class BaseGrid extends Phaser.GameObjects.Container {
         const yy = this.y + h / 2
 
         if (texture !== '') {
-            this.image = this.scene.add.image(xx, yy, TextureKeys.Backdrop)
+            this.image = this.scene.add.image(xx, yy, texture)
             this.image.setDisplaySize(w, h)
         } else {
             this.scene.add.grid(xx, yy, w, h, u, u, fillColor)
