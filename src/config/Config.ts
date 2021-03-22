@@ -83,6 +83,6 @@ export default function GetConfig(screenWidth, screenHeight): Config {
         topBar: topBar
         stagingArea: stagingArea
         gameOver: gameOver
-        playMusic: true
+        playMusic: false
     }
 }

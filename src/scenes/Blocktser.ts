@@ -81,20 +81,8 @@ export default class Blockster extends Phaser.Scene
         let cells = shapes[Math.floor(Math.random() * (shapes.length))]
 
         const textures = [TextureKeys.Red, TextureKeys.Blue, TextureKeys.Green, TextureKeys.Orange]
-        const index = Math.round(Math.random() * 4)
+        const index = Math.floor(Math.random() * textures.length)
         let texture = textures[index]
-        const value = Math.random()
-        if (value < 0.25) {
-            texture = TextureKeys.Blue
-        } else if (value < 0.5) {
-            texture = TextureKeys.Red
-        } else if (value < 0.75) {
-            texture = TextureKeys.Green
-        } else {
-            texture = TextureKeys.Orange
-        }
-
-        //const texture = Math.random() < 0.5 ? TextureKeys.Blue : TextureKeys.Red
         const dragHandlers = [this.mainArea, this.stagingArea]
         const dragScale = this.config.dragScale
         const imageDragScale = this.config.imageDragScale
@@ -103,16 +91,14 @@ export default class Blockster extends Phaser.Scene
 
     update(time: number, delta: number) {
         super.update(time, delta);
+
+        if (this.gameOver) {
+            console.log('game over')
+        }
     }
 
     get gameOver() : boolean {
-        const gameOver = this.stagingArea.shapes.every(s => !this.mainArea.canShapeFit(s))
-        if (gameOver) {
-          return true
-        }
-
-        return false
-        //return this.stagingArea.shapes.every(s => !this.mainArea.canShapeFit(s))
+        return this.stagingArea.shapes.every(s => !this.mainArea.canShapeFit(s))
     }
 
     handleGameOver() {
@@ -123,20 +109,6 @@ export default class Blockster extends Phaser.Scene
     }
 
     updateScore() {
-        /*
-        var total = rows.Count + columns.Count;
-                _header.Score += 10 * total;
-                // 50 points bonus for clearing more than one row
-                _header.Score += 5 * Math.Max(0, rows.Count - 1);
-                // 50 points bonus for clearing more than one column
-                _header.Score += 5 * Math.Max(0, columns.Count - 1);
-                // 50 points bonus for clearing both rows and columns
-                _header.Score += 5 * Math.Min(rows.Count, columns.Count);
-                if (_header.Score > _header.HighScore)
-                {
-                    _header.HighScore = _header.Score;
-                }
-         */
         const rows = this.mainArea.completeRows.length
         const cols = this.mainArea.completeCols.length
 

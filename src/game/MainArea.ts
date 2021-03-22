@@ -109,8 +109,7 @@ export default class MainArea extends BaseGrid
 
         for (let row = 0; row < this.rows; ++row) {
             for (let col = 0; col < this.cols; ++col) {
-                const key = `${row},${col}`
-                if (this.cells.has(key)) {
+                if (!this.isCellEmpty(row, col)) {
                     continue
                 }
                 if (this.canShapeSettle(shape, row, col)) {
@@ -138,7 +137,7 @@ export default class MainArea extends BaseGrid
 
     isCellEmpty(row, col) {
         const key = `${row},${col}`
-        return !this.cells.has(key) || this.cells.get(key) === null
+        return !this.cells.has(key)
     }
 
     get completeRows(): number[] {
@@ -181,13 +180,12 @@ export default class MainArea extends BaseGrid
 
     clearCell(row: number, col: number) {
         const key = `${row},${col}`
-        console.log(`clearCell ${key}`)
-        if (!this.cells.has(key) || this.cells.get(key) === null) {
+        if (!this.cells.has(key)) {
             return
         }
 
         this.cells.get(key).destroy()
-        this.cells.set(key, null)
+        this.cells.delete(key)
     }
 
     clearComplete() {
