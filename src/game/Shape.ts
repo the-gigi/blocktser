@@ -43,7 +43,7 @@ export default class Shape extends Phaser.GameObjects.Container {
             image.setDisplaySize(unit, unit)
             image.setDepth(depth)
             if (draggable) {
-                image.setInteractive()
+                image.setInteractive({ cursor: 'pointer' })
                 scene.input.setDraggable(image);
             }
             this._images.push(image)

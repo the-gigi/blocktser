@@ -20,12 +20,17 @@ export default class GameOver extends Phaser.Scene {
 
         // add the text with some styling
         const c = GetConfig(0, 0).gameOver
-        this.add.text(x, y, 'Game Over!', {
+        const text = this.add.text(x, y, 'Game Over!', {
             fontSize: c.fontSize,
             color: c.color,
             backgroundColor: c.backgroundColor,
             shadow: c.shadow,
             padding: c.padding
         }).setOrigin(0.5)
+
+        text.setInteractive({ cursor: 'pointer' })
+        text.on('pointerdown', () => {
+            this.scene.start(SceneKeys.Blocktser)
+        })
     }
 }
