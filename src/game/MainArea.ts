@@ -188,7 +188,7 @@ export default class MainArea extends BaseGrid
         this.cells.delete(key)
     }
 
-    clearComplete() {
+    clearComplete(): number {
         const completeRows = this.completeRows
         const completeCols = this.completeCols
 
@@ -203,6 +203,8 @@ export default class MainArea extends BaseGrid
                 this.clearCell(row, col)
             }
         }
+
+        return completeRows.length + completeCols.length
     }
 
     onDragging(shape: Shape) {

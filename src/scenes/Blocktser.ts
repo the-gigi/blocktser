@@ -9,6 +9,7 @@ import MainArea from "~/game/MainArea";
 import TopBar from "~/game/TopBar"
 import MainEventHandler from "~/game/Interfaces";
 import SceneKeys from "~/config/SceneKeys";
+import SoundManager from "~/game/SoundManager";
 
 const highScoreKey = 'blocktser/high-score'
 
@@ -17,6 +18,7 @@ export default class Blockster extends Phaser.Scene
     private mainArea!: MainArea
     private topBar!: TopBar
     private stagingArea!: StagingArea
+    private soundManager!: SoundManager
     private config!: Config
     private score: number = 0
     private highScore: number = 0
@@ -38,6 +40,7 @@ export default class Blockster extends Phaser.Scene
         this.createMainArea(this.config.mainArea)
         this.createStagingArea(this.config.stagingArea)
         this.createTopBar(this.config.topBar)
+        this.soundManager = new SoundManager(this.mainArea.scene)
         if(this.config.playMusic) {
             this.music = this.sound.add(AudioKeys.Music)
             this.music.play({volume: 0.8, loop: true})
@@ -70,7 +73,8 @@ export default class Blockster extends Phaser.Scene
 
     createShape(x, y, unit: number, depth: number = 0, draggable: boolean = false) {
         const shapes: Pair[][] = [
-            [[0, 0], [1, 0], [1, 1], [1, 2], [1, 3]],
+            [[0, 0], [1, 0], [1, 1], [1, 2]],
+            [[0, 0], [0, 1], [1, 1], [2, 1]],
             [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]],
             [[0, 0]],
             [[0, 0], [0, 1], [0, 2]],
@@ -114,7 +118,7 @@ export default class Blockster extends Phaser.Scene
         localStorage.setItem(highScoreKey, String(this.highScore))
         this.scene.run(SceneKeys.GameOver)
         this.stagingArea.interactive = false
-        this.sound.play(AudioKeys.GameOver)
+        this.soundManager.playGameOver()
     }
 
     updateScore() {
@@ -140,22 +144,24 @@ export default class Blockster extends Phaser.Scene
 
     onDrop(shape: Shape, ok: boolean) {
         if (ok) {
+            this.soundManager.playPlace()
             this.stagingArea.destroyShape(shape)
             if (this.stagingArea.empty) {
                 this.populateStagingArea(this.config.stagingArea.unit)
             }
 
             this.updateScore()
-
-            this.mainArea.clearComplete()
+            const totalComplete = this.mainArea.clearComplete()
+            if (totalComplete > 0) {
+                this.soundManager.playComplete()
+            }
             // check for game over
             if (this.gameOver) {
                 this.handleGameOver()
             }
         } else {
+            this.soundManager.playPlaceFail()
             this.stagingArea.repositionShape(shape)
         }
-
-        this.sound.play(AudioKeys.Place)
     }
 }
