@@ -6,23 +6,8 @@ export default class SoundManager {
     private readonly completeKeys: string[]
     private readonly gameOverKeys: string[]
 
-
-
-
     constructor(scene: Phaser.Scene) {
         this.sound = scene.sound
-        this.completeKeys = [
-            AudioKeys.Complete1,
-            AudioKeys.Complete2,
-            AudioKeys.Complete3,
-            AudioKeys.Complete4,
-            AudioKeys.Complete5,
-            AudioKeys.Complete6,
-        ]
-        this.gameOverKeys = [
-            AudioKeys.GameOver,
-        ]
-
     }
 
     pickSound(sounds: string[]) {
@@ -30,18 +15,18 @@ export default class SoundManager {
     }
 
     playPlace() {
-        this.sound.play(AudioKeys.Place)
+        this.sound.play(this.pickSound(AudioKeys.place))
     }
 
     playPlaceFail() {
-        this.sound.play(AudioKeys.PlaceFail)
+        this.sound.play(this.pickSound(AudioKeys.placeFail))
     }
 
-    playComplete() {
-        this.sound.play(this.pickSound(this.completeKeys))
+    playClear() {
+        this.sound.play(this.pickSound(AudioKeys.clear))
     }
 
     playGameOver() {
-        this.sound.play(this.pickSound(this.gameOverKeys))
+        this.sound.play(this.pickSound(AudioKeys.gameOver))
     }
 }

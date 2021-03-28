@@ -24,7 +24,6 @@ export interface Config {
     topBar: TopBarConfig
     stagingArea: ComponentConfig
     gameOver: TextConfig
-    playMusic: boolean
 }
 
 export default function GetConfig(screenWidth, screenHeight): Config {
@@ -92,6 +91,5 @@ export default function GetConfig(screenWidth, screenHeight): Config {
         topBar: topBar
         stagingArea: stagingArea
         gameOver: gameOver
-        playMusic: false
     }
 }

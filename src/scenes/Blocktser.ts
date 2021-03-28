@@ -2,7 +2,6 @@ import Phaser from 'phaser'
 import GetConfig, {ComponentConfig, Config, TopBarConfig} from "~/config/Config";
 import Shape from "~/game/Shape";
 import Pair from "~/game/Shape";
-import AudioKeys from "~/config/AudioKeys";
 import TextureKeys from "~/config/TextureKeys";
 import StagingArea from "~/game/StagingArea";
 import MainArea from "~/game/MainArea";
@@ -42,10 +41,6 @@ export default class Blockster extends Phaser.Scene
         this.createStagingArea(this.config.stagingArea)
         this.createTopBar(this.config.topBar)
         this.soundManager = new SoundManager(this.mainArea.scene)
-        if(this.config.playMusic) {
-            this.music = this.sound.add(AudioKeys.Music)
-            this.music.play({volume: 0.8, loop: true})
-        }
     }
 
     createStagingArea(stagingAreaConfig: ComponentConfig) {
@@ -173,7 +168,7 @@ export default class Blockster extends Phaser.Scene
             if (this.scoreBump > 0) {
                 this.mainArea.displayScoreBump(this.scoreBump)
                 this.scoreBump = 0
-                this.soundManager.playComplete()
+                this.soundManager.playClear()
             }
             this.mainArea.clearComplete()
             // check for game over

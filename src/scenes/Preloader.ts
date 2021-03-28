@@ -10,18 +10,11 @@ export default class Preloader extends Phaser.Scene {
     }
 
     preload() {
-        this.load.audio(AudioKeys.Place, 'audio/clunk.wav')
-        this.load.audio(AudioKeys.PlaceFail, 'audio/no.wav')
-        this.load.audio(AudioKeys.GameOver, 'audio/game-over.wav')
-
-        this.load.audio(AudioKeys.Complete1, 'audio/awesome.mp3')
-        this.load.audio(AudioKeys.Complete2, 'audio/oh-yeah-low-4.wav')
-        this.load.audio(AudioKeys.Complete3, 'audio/oh-yeah-low-4.wav')
-        this.load.audio(AudioKeys.Complete4, 'audio/oh-yeah-low-4.wav')
-        this.load.audio(AudioKeys.Complete5, 'audio/oh-yeah-low-4.wav')
-        this.load.audio(AudioKeys.Complete6, 'audio/oh-yeah-low-4.wav')
-
-        this.load.audio(AudioKeys.Music, 'audio/blocktser.wav')
+        Object.entries(AudioKeys).forEach(([_, filenames]) => {
+            filenames.forEach((filename) => {
+                this.load.audio(filename, filename)
+            }, this)
+        }, this)
 
         this.load.image(TextureKeys.Red, 'images/red.png')
         this.load.image(TextureKeys.Blue, 'images/blue.png')
