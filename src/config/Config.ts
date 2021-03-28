@@ -8,6 +8,7 @@ export interface ComponentConfig {
 }
 
 export interface TextConfig {
+    fontFamily?: string
     fontSize: string
     color: string
     backgroundColor: string
@@ -60,9 +61,10 @@ export default function GetConfig(screenWidth, screenHeight): Config {
         rows: topBarRows
         cols: gridCols
         fillColor: 0xffc6ac
-        fontSize: '18px'
+        fontFamily: 'Arial'
+        fontSize: '24px'
         color: '#000000'
-        backgroundColor: '#ffc6ac'
+        backgroundColor: null
         shadow: {fill: true, blur: 0, offsetY: 0}
         padding: {left: 5, right: 5, top: 0, bottom: 0}
     }

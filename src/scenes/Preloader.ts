@@ -27,6 +27,7 @@ export default class Preloader extends Phaser.Scene {
         this.load.image(TextureKeys.Backdrop, 'images/backdrop.png')
         this.load.image(TextureKeys.Backdrop2, 'images/backdrop2.png')
         this.load.image(TextureKeys.Staging, 'images/staging.png')
+        this.load.image(TextureKeys.TopBar, 'images/topbar.png')
     }
 
     create() {
