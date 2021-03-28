@@ -101,7 +101,14 @@ export default class Blockster extends Phaser.Scene
         y += unit / 2
         let cells = shapes[Math.floor(Math.random() * (shapes.length))]
 
-        const textures = [TextureKeys.Red, TextureKeys.Blue, TextureKeys.Green, TextureKeys.Orange]
+        const textures = [
+            TextureKeys.Red,
+            TextureKeys.Blue,
+            TextureKeys.Green,
+            TextureKeys.Orange,
+            TextureKeys.Purple,
+            TextureKeys.Yellow,
+        ]
         const index = Math.floor(Math.random() * textures.length)
         let texture = textures[index]
         const dragHandlers = [this.mainArea, this.stagingArea]
