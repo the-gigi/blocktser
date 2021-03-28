@@ -36,19 +36,27 @@ export default function GetConfig(screenWidth, screenHeight): Config {
     const totalRows = gridRows + topBarRows + stagingAreaRows
     const unit = Math.min(screenHeight / (totalRows + 2), screenWidth / (gridCols + 2))
 
-    const grid : ComponentConfig = {
+    const mainArea : ComponentConfig = {
         unit: unit
         x: screenWidth / 2 - gridCols / 2 * unit
         y: screenHeight / 2 - gridRows / 2 * unit
         rows: gridRows
         cols: gridCols
         fillColor: 0x88ff66
+
+        fontSize: '60px'
+        fontColor: '#ffffff'
+        backgroundColor: '#ff00dd'
+        shadow: {fill: true, blur: 0, offsetY: 0}
+        padding: {left: 0, right: 0, top: 0, bottom: 0}
+
+        scoreBumpDelay: 60
     }
 
     const topBar : TopBarConfig = {
         unit: unit
-        x: grid.x
-        y: grid.y - topBarRows * unit
+        x: mainArea.x
+        y: mainArea.y - topBarRows * unit
         rows: topBarRows
         cols: gridCols
         fillColor: 0xffc6ac
@@ -60,9 +68,9 @@ export default function GetConfig(screenWidth, screenHeight): Config {
     }
 
     const stagingArea : ComponentConfig = {
-        unit: grid.unit * gridRows / stagingAreaCols
-        x: grid.x
-        y: grid.y + grid.rows * unit
+        unit: mainArea.unit * gridRows / stagingAreaCols
+        x: mainArea.x
+        y: mainArea.y + mainArea.rows * unit
         rows: stagingAreaRows
         cols: stagingAreaCols
         fillColor: 0x99aa55
@@ -77,9 +85,9 @@ export default function GetConfig(screenWidth, screenHeight): Config {
     }
 
     return {
-        dragScale: grid.unit / stagingArea.unit
+        dragScale: mainArea.unit / stagingArea.unit
         imageDragScale: 0.85
-        mainArea: grid
+        mainArea: mainArea
         topBar: topBar
         stagingArea: stagingArea
         gameOver: gameOver

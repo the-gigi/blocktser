@@ -4,12 +4,17 @@ import BaseGrid from "~/game/BaseGrid";
 import TextureKeys from "~/config/TextureKeys";
 import ShapeDragHandler from "~/game/Interfaces";
 import MainEventHandler from "~/game/Interfaces";
+import TextStyle = Phaser.GameObjects.TextStyle;
+
 
 export default class MainArea extends BaseGrid
     implements ShapeDragHandler {
     private phantom!: (Shape | null)
     private cells!: Map<string, Phaser.GameObjects.Image>
+    private scoreBump!: Phaser.GameObjects.Text
     private shapeEventHandler!: MainEventHandler
+    private scoreBumpLife: number
+    private readonly scoreBumpDelay: number
 
     constructor(scene: Phaser.Scene,
                 x: number,
@@ -18,14 +23,30 @@ export default class MainArea extends BaseGrid
                 cols: number,
                 unit: number,
                 fillColor: number,
+                textStyle: TextStyle,
+                scoreBumpDelay: number,
                 shapeEventHandler: MainEventHandler) {
         super(scene, x, y, rows, cols, unit, fillColor, TextureKeys.Backdrop2)
         this.phantom = null
+        this.scoreBump = this.scene.add.text(0, 0, "", textStyle)
+        this.scoreBump.setDepth(1)
+        this.scoreBump.setVisible(false)
+        this.scoreBumpDelay = scoreBumpDelay
         this.cells = new Map<string, Phaser.GameObjects.Image>()
         this.shapeEventHandler = shapeEventHandler
+        this.scoreBumpLife = 0
     }
 
-    preUpdate() {
+    update(time: number, delta: number) {
+        console.log(`scoreBumpLife: ${this.scoreBumpLife}, scoreBump.visible: ${this.scoreBump.visible}`)
+        if (this.scoreBumpLife > 0) {
+            this.scoreBump.setVisible(true)
+            this.scoreBumpLife -= 1
+        } else {
+            if (this.scoreBump.visible) {
+                this.scoreBump.setVisible(false)
+            }
+        }
     }
 
     findGridLocation(shape: Shape): Pair {
@@ -100,6 +121,19 @@ export default class MainArea extends BaseGrid
             this.cells.set(key, image)
         })
         this.shapeEventHandler.onDrop(shape, true)
+    }
+
+    displayScoreBump(scoreBump: number) {
+        // find center of intersection of completed rows and columns
+        const firstRow = this.completeRows.length == 0 ? (this.rows - 1) / 2 :  Math.min(...this.completeRows)
+        const lastRow = this.completeRows.length == 0 ? (this.rows - 1) / 2 :  Math.max(...this.completeRows)
+        const firstCol = this.completeCols.length == 0 ? (this.cols - 1) / 2 :  Math.min(...this.completeCols)
+        const lastCol = this.completeCols.length == 0 ? (this.cols - 1)/ 2 :  Math.max(...this.completeCols)
+        this.scoreBump.text = String(scoreBump)
+        const centerX = this.x + (firstCol + lastCol + 1) / 2 * this.unit - this.scoreBump.width / 2
+        const centerY = this.y + (firstRow + lastRow + 1) / 2 * this.unit - this.scoreBump.height / 2
+        this.scoreBump.setPosition(centerX, centerY)
+        this.scoreBumpLife = this.scoreBumpDelay
     }
 
     canShapeFit(shape: Shape) : boolean {
@@ -188,7 +222,7 @@ export default class MainArea extends BaseGrid
         this.cells.delete(key)
     }
 
-    clearComplete(): number {
+    clearComplete() {
         const completeRows = this.completeRows
         const completeCols = this.completeCols
 
@@ -203,8 +237,6 @@ export default class MainArea extends BaseGrid
                 this.clearCell(row, col)
             }
         }
-
-        return completeRows.length + completeCols.length
     }
 
     onDragging(shape: Shape) {
