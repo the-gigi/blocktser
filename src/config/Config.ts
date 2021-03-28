@@ -57,6 +57,7 @@ export default function GetConfig(screenWidth, screenHeight): Config {
         unit: unit
         x: mainArea.x
         y: mainArea.y - topBarRows * unit
+        offset: 10
         rows: topBarRows
         cols: gridCols
         fillColor: 0xffc6ac

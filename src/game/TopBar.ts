@@ -20,9 +20,13 @@ export default class TopBar extends BaseGrid {
             padding: c.padding
         }
 
-        const y = this.y + this.rows * this.unit / 2
-        this.score = this.scene.add.text(0, y, '', textStyle).setOrigin(0, 0.5)
-        this.highScore = this.scene.add.text(0, y, '', textStyle).setOrigin(0, 0.5)
+        const x = this.x + c.offset
+        const y1 = this.y + this.rows * this.unit / 3
+
+
+        this.score = this.scene.add.text(x, y1, '', textStyle).setOrigin(0, 0.5)
+        const y2 = y1 + this.score.height + c.offset
+        this.highScore = this.scene.add.text(x, y2, '', textStyle).setOrigin(0, 0.5)
 
         this.updateScore(0)
         this.updateHighScore(highScore)
@@ -34,12 +38,9 @@ export default class TopBar extends BaseGrid {
 
     updateScore(newScore: number) {
         this.score.setText('Score: ' + newScore)
-        this.score.x = this.x + (this.width * 0.5 - this.score.width) / 2
     }
 
     updateHighScore(newHighScore: number) {
         this.highScore.setText('High Score: ' + newHighScore)
-        const ww = this.width * 0.5
-        this.highScore.x = this.x + ww + (ww - this.highScore.width) / 2
     }
 }
