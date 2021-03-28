@@ -38,7 +38,6 @@ export default class MainArea extends BaseGrid
     }
 
     update(time: number, delta: number) {
-        console.log(`scoreBumpLife: ${this.scoreBumpLife}, scoreBump.visible: ${this.scoreBump.visible}`)
         if (this.scoreBumpLife > 0) {
             this.scoreBump.setVisible(true)
             this.scoreBumpLife -= 1
