@@ -10,6 +10,7 @@ enum TextureKeys {
     Backdrop2 = 'backdrop2',
     Staging = 'staging',
     TopBar = 'topbar',
+    GameOver = 'game-over'
 }
 
 export default TextureKeys

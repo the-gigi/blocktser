@@ -24,7 +24,6 @@ export interface Config {
     mainArea: ComponentConfig
     topBar: TopBarConfig
     stagingArea: ComponentConfig
-    gameOver: TextConfig
 }
 
 export default function GetConfig(screenWidth, screenHeight): Config {
@@ -78,20 +77,11 @@ export default function GetConfig(screenWidth, screenHeight): Config {
         fillColor: 0x99aa55
     }
 
-    const gameOver : TextConfig = {
-        fontSize: '20px'
-        color: '#ffffff'
-        backgroundColor: '#00ff00'
-        shadow: {fill: true, blur: 0, offsetY: 0}
-        padding: {left: 10, right: 10, top: 0, bottom: 0}
-    }
-
     return {
         dragScale: mainArea.unit / stagingArea.unit
         imageDragScale: 0.85
         mainArea: mainArea
         topBar: topBar
         stagingArea: stagingArea
-        gameOver: gameOver
     }
 }
