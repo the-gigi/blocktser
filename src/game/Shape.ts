@@ -7,6 +7,7 @@ export type Pair = [number, number]
 export default class Shape extends Phaser.GameObjects.Container {
     private _unit: number
     private _imageDragScale: number
+    private _boundingBox: Rectangle
 
     private readonly _cells: Pair[]
     private readonly _images: Phaser.GameObjects.Image[]
@@ -14,6 +15,7 @@ export default class Shape extends Phaser.GameObjects.Container {
     private readonly dragScale: number
     private readonly _texture: string
     private readonly dragHandlers: ShapeDragHandler[]
+
 
     constructor(scene: Phaser.Scene,
                 x: number,
@@ -34,8 +36,10 @@ export default class Shape extends Phaser.GameObjects.Container {
         this._cells = cells
         this.dragScale = dragScale
         this.dragHandlers = dragHandlers
+        this._boundingBox = this.getBounds()
         // create the shape squares as images
         this._images = []
+        const self = this
         cells.forEach((c) => {
             const xx = x + c[0] * unit
             const yy = y + c[1] * unit
@@ -43,7 +47,7 @@ export default class Shape extends Phaser.GameObjects.Container {
             image.setDisplaySize(unit, unit)
             image.setDepth(depth)
             if (draggable) {
-                image.setInteractive({ cursor: 'pointer' })
+                image.setInteractive({ cursor: 'pointer'})
                 scene.input.setDraggable(image);
             }
             this._images.push(image)
@@ -87,6 +91,11 @@ export default class Shape extends Phaser.GameObjects.Container {
                 self.dragHandlers.forEach((h) => h.onDragEnd(self))
             })
         }
+    }
+
+
+    updateHitArea() {
+
     }
 
     get texture(): string {
@@ -144,6 +153,7 @@ export default class Shape extends Phaser.GameObjects.Container {
     }
 
     centerInRect(rect: Rectangle) {
+        this._boundingBox = rect
         this.x = rect.x + (rect.width - this.size[0]) / 2
         this.y = rect.y + (rect.height - this.size[1]) / 2
 
