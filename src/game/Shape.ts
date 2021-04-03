@@ -11,6 +11,7 @@ export default class Shape extends Phaser.GameObjects.Container {
 
     private readonly _cells: Pair[]
     private readonly _images: Phaser.GameObjects.Image[]
+    private readonly _draggable: boolean
     private readonly size: Pair
     private readonly dragScale: number
     private readonly _texture: string
@@ -32,6 +33,7 @@ export default class Shape extends Phaser.GameObjects.Container {
         this._unit = unit
         this._texture = texture
         this._imageDragScale = imageDragScale
+        this._draggable = draggable
         this.size = this.calcSize(cells)
         this._cells = cells
         this.dragScale = dragScale
@@ -53,47 +55,58 @@ export default class Shape extends Phaser.GameObjects.Container {
             this._images.push(image)
         })
 
-        if (draggable) {
-            const self = this
-            const shapeImages = this._images
-            scene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-                if (shapeImages.indexOf(gameObject) == -1) {
-                    return
-                }
-                const dx = dragX - gameObject.x
-                const dy = dragY - gameObject.y
-                self.x += dx
-                self.y += dy
-                shapeImages.forEach((c) => {
-                    c.x += dx;
-                    c.y += dy;
-                })
-                self.dragHandlers.forEach((h) => h.onDragging(self))
-            })
-
-            scene.input.on('dragstart', function (pointer, gameObject) {
-                if (shapeImages.indexOf(gameObject) == -1) {
-                    return
-                }
-
-                self._unit *= self.dragScale
-                self.updateShape(true)
-                self.dragHandlers.forEach((h) => h.onDragStart(self))
-            })
-
-            scene.input.on('dragend', function (pointer, gameObject) {
-                if (shapeImages.indexOf(gameObject) == -1) {
-                    return
-                }
-
-                self._unit /= self.dragScale
-                self.updateShape(false)
-                self.dragHandlers.forEach((h) => h.onDragEnd(self))
-            })
+        if (!draggable) {
+            return
         }
+
+        this.setInteractive({ cursor: 'pointer'})
+        scene.input.on('drag', function(pointer, gameObject, dragX, dragY) {
+            self.onDragging(self, pointer, gameObject, dragX, dragY)
+        })
+
+        scene.input.on('dragstart', function (pointer, gameObject) {
+            self.onDragStart(self, pointer, gameObject)
+        })
+
+        scene.input.on('dragend', function (pointer, gameObject) {
+            self.onDragEnd(self, pointer, gameObject)
+        })
     }
 
+    onDragging(shape, pointer, gameObject, dragX, dragY) {
+        if (shape._images.indexOf(gameObject) == -1) {
+            return
+        }
+        const dx = dragX - gameObject.x
+        const dy = dragY - gameObject.y
+        shape.x += dx
+        shape.y += dy
+        shape._images.forEach((c) => {
+            c.x += dx;
+            c.y += dy;
+        })
+        shape.dragHandlers.forEach((h) => h.onDragging(shape))        
+    }
+    
+    onDragStart(shape, pointer, gameObject) {
+        if (shape._images.indexOf(gameObject) == -1) {
+            return
+        }
+    
+        shape._unit *= shape.dragScale
+        shape.updateShape(true)
+        shape.dragHandlers.forEach((h) => h.onDragStart(shape))
+    }
 
+    onDragEnd(shape, pointer, gameObject) {
+        if (shape._images.indexOf(gameObject) == -1) {
+            return
+        }
+
+        shape._unit /= shape.dragScale
+        shape.updateShape(false)
+        shape.dragHandlers.forEach((h) => h.onDragEnd(shape))
+    }
     updateHitArea() {
 
     }
@@ -111,14 +124,6 @@ export default class Shape extends Phaser.GameObjects.Container {
 
     get cells(): Pair[] {
         return this._cells
-    }
-
-    set interactive(value: boolean) {
-        if (value) {
-            this.images.forEach(i => i.setInteractive())
-        } else {
-            this.images.forEach(i => i.disableInteractive())
-        }
     }
 
     get images(): Phaser.GameObjects.Image[] {
@@ -153,6 +158,10 @@ export default class Shape extends Phaser.GameObjects.Container {
     }
 
     centerInRect(rect: Rectangle) {
+        // if (this._draggable) {
+        //     this.setInteractive({hitArea: rect, hitAreaCallback: Rectangle.Contains, useHandCursor: true})
+        //     this.scene.input.setDraggable(this);
+        // }
         this._boundingBox = rect
         this.x = rect.x + (rect.width - this.size[0]) / 2
         this.y = rect.y + (rect.height - this.size[1]) / 2
