@@ -73,7 +73,7 @@ export default class MainArea extends BaseGrid
             return
         }
 
-        this.phantom.setPosition(x, y)
+        this.phantom.move(x, y)
         this.phantom.updateShape()
     }
 
