@@ -87,6 +87,6 @@ export default class StagingArea extends BaseGrid {
     }
 
     set interactive(value: boolean) {
-       this._shapes.forEach(s => s.interactive = value)
+       this._shapes.forEach(s => s.disable())
     }
 }

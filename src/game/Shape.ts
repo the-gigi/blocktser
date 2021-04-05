@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import Rectangle = Phaser.Geom.Rectangle;
 import ShapeDragHandler from "~/game/Interfaces";
+import TextureKeys from "~/config/TextureKeys";
 
 export type Pair = [number, number]
 
@@ -77,6 +78,10 @@ export default class Shape {
         })
     }
 
+    disable() {
+        this._container.disableInteractive()
+        this._images.forEach((image) => image.setTexture(TextureKeys.Phantom))
+    }
     positionImages() {
         const w = Math.max(...this.cells.map(c => c[0]))
         const h = Math.max(...this.cells.map(c => c[1]))
