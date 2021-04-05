@@ -8,7 +8,6 @@ export type Pair = [number, number]
 export default class Shape {
     private _unit: number
     private _imageDragScale: number
-    //private _boundingBox: Rectangle
     private _container!: Phaser.GameObjects.Container
 
     private readonly _cells: Pair[]
@@ -39,30 +38,24 @@ export default class Shape {
         this._cells = cells
         this.dragScale = dragScale
         this.dragHandlers = dragHandlers
-        //this._boundingBox = this.getBounds()
         // create the shape squares as images
         this._images = []
         const self = this
-        const w = Math.max(...cells.map(c => c[0]))
-        const h = Math.max(...cells.map(c => c[1]))
-        const offsetX = w / 2
-        const offsetY = h / 2
 
         cells.forEach((c) => {
-            const xx = (c[0] - offsetX) * unit
-            const yy = (c[1] - offsetY) * unit
-            const image = scene.add.image(xx, yy, texture)
+            const image = scene.add.image(0, 0, texture)
             image.setDisplaySize(unit, unit)
             image.setDepth(depth)
             this._images.push(image)
         })
 
+        this.positionImages()
         this._container = scene.add.container(x, y, this._images)
         if (!draggable) {
             return
         }
 
-        // // Add border to container
+        // Add border to container
         // const rect = scene.add.rectangle(0, 0, 5 * unit, 5 * unit)
         // rect.setStrokeStyle(1, 0xff00ff)
         // this._container.add(rect)
@@ -82,6 +75,20 @@ export default class Shape {
         scene.input.on('dragend', function (pointer, gameObject) {
             self.onDragEnd(self, pointer, gameObject)
         })
+    }
+
+    positionImages() {
+        const w = Math.max(...this.cells.map(c => c[0]))
+        const h = Math.max(...this.cells.map(c => c[1]))
+        const offsetX = w / 2
+        const offsetY = h / 2
+
+        for (let i = 0; i < this.cells.length; ++i) {
+            const cell = this.cells[i]
+            const image = this._images[i]
+            image.x = (cell[0] - offsetX) * this._unit
+            image.y = (cell[1] - offsetY) * this._unit
+        }
     }
 
     onDragging(shape, pointer, gameObject, dragX, dragY) {
@@ -178,6 +185,7 @@ export default class Shape {
         this._container.setPosition(x, y)
         this._container.setSize(dim, dim)
         this._container.setDepth(1)
+        this.positionImages()
     }
 
     resetImageDragScale() {
