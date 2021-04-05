@@ -43,11 +43,14 @@ export default class Shape {
         // create the shape squares as images
         this._images = []
         const self = this
+        const w = Math.max(...cells.map(c => c[0]))
+        const h = Math.max(...cells.map(c => c[1]))
+        const offsetX = w / 2
+        const offsetY = h / 2
+
         cells.forEach((c) => {
-            // const xx = x + c[0] * unit
-            // const yy = y + c[1] * unit
-            const xx = c[0] * unit
-            const yy = c[1] * unit
+            const xx = (c[0] - offsetX) * unit
+            const yy = (c[1] - offsetY) * unit
             const image = scene.add.image(xx, yy, texture)
             image.setDisplaySize(unit, unit)
             image.setDepth(depth)
@@ -59,10 +62,10 @@ export default class Shape {
             return
         }
 
-        // Add border to container
-        const rect = scene.add.rectangle(0, 0, 5 * unit, 5 * unit)
-        rect.setStrokeStyle(1, 0xff00ff)
-        this._container.add(rect)
+        // // Add border to container
+        // const rect = scene.add.rectangle(0, 0, 5 * unit, 5 * unit)
+        // rect.setStrokeStyle(1, 0xff00ff)
+        // this._container.add(rect)
 
         this._container.setSize(5 * unit, 5 * unit)
 
@@ -89,13 +92,8 @@ export default class Shape {
         const dy = dragY - gameObject.y
         shape._container.x += dx
         shape._container.y += dy
-        // shape._images.forEach((c) => {
-        //     c.x += dx;
-        //     c.y += dy;
-        // })
         shape.dragHandlers.forEach((h) => h.onDragging(shape))
     }
-
 
     onDragStart(shape, pointer, gameObject) {
         if (shape._container !== gameObject) {
@@ -174,33 +172,12 @@ export default class Shape {
     }
 
     centerInRect(rect: Rectangle) {
-        const x = rect.x + (rect.width - this.size[0]) / 2
-        const y = rect.y + (rect.height - this.size[1]) / 2
         const dim = 5 * this._unit
-        const dx = (rect.width - dim) / 2
-        const dy = (rect.height - dim) / 2
-
-        this._container.setPosition(x + dx, y + dy)
+        const x = rect.x + (rect.width) / 2
+        const y = rect.y + (rect.height) / 2
+        this._container.setPosition(x, y)
         this._container.setSize(dim, dim)
-
-        //this._boundingBox = rect
-
-        //this.x = this._container.x
-        //this.y = this._container.y
-
-        // this.x = rect.x + (rect.width - this.size[0]) / 2
-        // this.y = rect.y + (rect.height - this.size[1]) / 2
-
-        // for (let i = 0; i < this.cells.length; ++i) {
-        //     const cell = this.cells[i]
-        //     const image = this._images[i]
-        //     image.x = this.x + cell[0] * this._unit
-        //     image.y = this.y + cell[1] * this._unit
-        // }
-
-        console.log(`centerInRect(), rect: ${Math.floor(rect.x)}, ${Math.floor(rect.y)}`)
-        console.log(`centerInRect(), cont: ${Math.floor(this._container.x)}, ${Math.floor(this._container.y)}`)
-        console.log('---------------')
+        this._container.setDepth(1)
     }
 
     resetImageDragScale() {
