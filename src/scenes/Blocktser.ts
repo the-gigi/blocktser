@@ -55,7 +55,7 @@ export default class Blockster extends Phaser.Scene
             let shape = this.createShape(0, 0, unit, 1, true)
             this.stagingArea.addShape(shape)
             if (!this.mainArea.canShapeFit(shape)) {
-                shape.disable()
+                shape.enabled = false
             }
         }
     }
@@ -131,7 +131,7 @@ export default class Blockster extends Phaser.Scene
     handleGameOver() {
         localStorage.setItem(highScoreKey, String(this.highScore))
         this.scene.run(SceneKeys.GameOver)
-        this.stagingArea.interactive = false
+        this.stagingArea.disable()
         this.soundManager.playGameOver()
     }
 
@@ -179,11 +179,9 @@ export default class Blockster extends Phaser.Scene
                 this.handleGameOver()
             }
 
-            // Disable shapes that don't fit
+            // Update shapes that don't fit
             for (let shape of this.stagingArea.shapes) {
-                if (!this.mainArea.canShapeFit(shape)) {
-                    shape.disable()
-                }
+                shape.enabled = this.mainArea.canShapeFit(shape)
             }
 
 

@@ -78,10 +78,16 @@ export default class Shape {
         })
     }
 
-    disable() {
-        this._container.disableInteractive()
-        this._images.forEach((image) => image.setTexture(TextureKeys.Phantom))
+    set enabled(value: boolean) {
+        const t = value ? this.texture : TextureKeys.Phantom
+        this._images.forEach((image) => image.setTexture(t))
+        if (value) {
+            this._container.setInteractive()
+        } else {
+            this._container.disableInteractive()
+        }
     }
+
     positionImages() {
         const w = Math.max(...this.cells.map(c => c[0]))
         const h = Math.max(...this.cells.map(c => c[1]))
@@ -125,9 +131,6 @@ export default class Shape {
         shape._unit /= shape.dragScale
         shape.updateShape(false)
         shape.dragHandlers.forEach((h) => h.onDragEnd(shape))
-    }
-    updateHitArea() {
-
     }
 
     get texture(): string {
