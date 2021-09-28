@@ -1,5 +1,7 @@
 # Blocktser
-Block puzzle with [TypeScript](https://www.typescriptlang.org/) and [Phaser](https://phaser.io/)
+Block puzzle game made with [TypeScript](https://www.typescriptlang.org/) and [Phaser.io](https://phaser.io/)
+
+![screenshot](blocktser.png)
 
 ![License](https://img.shields.io/badge/license-MIT-green)
 
